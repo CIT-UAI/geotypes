@@ -78,6 +78,15 @@ test_that("SF sfc types Bad", {
 sf_example <- system.file("shape/nc.shp", package="sf") %.>%
   sf::st_read(., quiet = TRUE)
 
+#This one have MULTIPOLYGONS, POLYGONS, POINTS
+#Use spsUtil just to hide a warning from sf
+sf_example_multi <-  spsUtil::quiet({
+  sf_example %.>%
+  sf::st_cast(., "POLYGON", warn = FALSE) %.>%
+  rbind(., sf::st_centroid(.)) %.>%
+  rbind(., sf_example)
+})
+
 sf_df_opts <-
   list(
     columns = list(
@@ -169,13 +178,49 @@ test_that("SF sf active_column Bad", {
 })
 
 test_that("SF sf active_types Right", {
-  expect_error({
-    sf_sf(active_types = "MULTIPOLYGONS")(sf_example)
+  expect_no_error({
+    sf_sf(active_types = "MULTIPOLYGON")(sf_example)
   })
 })
 
 test_that("SF sf active_types Bad", {
   expect_error({
-    sf_sf(active_types = "POLYGONS")(sf_example)
+    sf_sf(active_types = "POLYGON")(sf_example)
+  })
+})
+
+test_that("SF sf active_types multi Right", {
+  expect_no_error({
+    sf_sf(
+      active_types =c(
+        "MULTIPOLYGON",
+        "POLYGON",
+        "POINT"
+      )
+    )(sf_example_multi)
+  })
+})
+
+test_that("SF sf active_types multi Bad", {
+  expect_error({
+    sf_sf(
+      active_types =c(
+        "MULTIPOLYGON",
+        "POLYGON"
+      )
+    )(sf_example_multi)
+  })
+})
+
+test_that("SF sf active_types multi extra Right", {
+  expect_no_error({
+    sf_sf(
+      active_types =c(
+        "MULTIPOLYGON",
+        "POLYGON",
+        "POINT",
+        "LINESTRING"
+      )
+    )(sf_example_multi)
   })
 })

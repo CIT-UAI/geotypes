@@ -10,6 +10,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
     spelling,
+    spsUtil,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports:
@@ -21,7 +22,6 @@ Imports:
 Language: en-US
 Collate: 
     'base_types.R'
-    'cppRouting.R'
     'geotypes-package.R'
     'ignore.R'
     'sf.R'
