@@ -1,6 +1,47 @@
 # geotypes
+
 Basic spatial types for static types on R
 
+This library gives custom assertion and types for spatial data.
+
+Intro here: https://github.com/moodymudskipper/typed/
+
+Examples:
+
+```R
+#This var can only be a sfnetwork object
+geotypes::sfnetworks_sfnetwork() ? network
+
+#This one can only be a geometry type and must be a polygon
+geotypes::sf_sfg(types = "POINT") ? var_sfg
+
+#Here store and id and node columns, where it only must exists
+#that two columns with their respective type
+geotypes::Data.frame(
+  columns = list(
+    id = typed::Integer(),
+    node = typed::Integer()
+  ),
+  only_cols = TRUE
+)
+```
+
+There is more.
+
+Base Types:
+
+- Data.frame
+- List
+
+SF:
+
+- SFG
+- SFC
+- SF
+
+SFNetworks
+
+- SFNetwork
 
 ## Base types
 
