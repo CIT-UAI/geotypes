@@ -158,6 +158,7 @@ test_that("SF sf df_opts Right", {
 test_that("SF sf df_opts Bad", {
   expect_error({
     new_df_opts <- sf_df_opts
+    #This should be typed::Double force error
     new_df_opts$columns$AREA <- typed::Integer()
     sf_sf(
       df_opts = new_df_opts
@@ -222,5 +223,29 @@ test_that("SF sf active_types multi extra Right", {
         "LINESTRING"
       )
     )(sf_example_multi)
+  })
+})
+
+test_that("SF sf: select all columns and active column", {
+  expect_no_error({
+    local({
+      df <- data.frame(
+        a = 1,
+        geom = sf::st_linestring() %.>% sf::st_sfc(.)
+      )
+      sf_df <- sf::st_as_sf(df)
+      sf_sf(
+        df_opts = list(
+          columns = list(
+            a = typed::Double()
+          ),
+          #Select all columns, notice the
+          #active column does no exists in columns param
+          select = "all_of"
+        )
+      )(
+        sf_df
+      )
+    })
   })
 })

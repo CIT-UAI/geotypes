@@ -124,10 +124,6 @@ sf_sf <- typed::as_assertion_factory(function(
     stop(e, call. = FALSE)
   }
 
-  invisible({
-    do.call("Data.frame", df_opts)(value)
-  })
-
   current_active_column <- attr(value, "sf_column")
   # Check the active column exists
   if (!(current_active_column %in% names(value))) {
@@ -157,6 +153,26 @@ sf_sf <- typed::as_assertion_factory(function(
     )
     stop(e, call. = FALSE)
   }
+
+  if (FALSE %in% ("columns" %in% names(df_opts))){
+    #If there is no df_opts, we need to include the active column
+    #active_column can exist or not, but current_active_column
+    #always exists, and if both exists they are the same
+    df_opts$columns <- local({
+      opts <- list()
+      opts[[current_active_column]] <- sf_sfc(types = active_types)
+      opts
+    })
+  } else {
+    if (FALSE %in% (current_active_column %in% names(df_opts$columns))){
+      #If the active column is not defined, we need to add it
+      df_opts$columns[[current_active_column]] <- sf_sfc(types = active_types)
+    }
+  }
+
+  invisible({
+    do.call("Data.frame", df_opts)(value)
+  })
 
   if (!is.null(active_types)) {
     sf_sfc(types = active_types)(sf::st_geometry(value))
