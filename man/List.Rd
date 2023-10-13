@@ -8,7 +8,6 @@ List(
   types = list(),
   default_type = typed::Any(),
   select = "any_of",
-  only_vals = FALSE,
   empty_ok = FALSE,
   null_ok = FALSE,
   anyNA = FALSE,
@@ -16,13 +15,19 @@ List(
 )
 }
 \arguments{
-\item{types}{List where each element must have a declared type, ex list(a = typed::Double())}
+\item{types}{List where each element must have a
+declared type, ex list(a = typed::Double())}
 
-\item{default_type}{On elements not declared on types, this will be the default one}
+\item{default_type}{On elements not declared on types,
+this will be the default one}
 
-\item{select}{if "all_of" all the elements declared on types must exists}
-
-\item{only_vals}{If must exists all and only the values declared on types}
+\item{select}{Set the relation between the declared
+elements on types and the existing ones
+"any_of": Can exist any element
+"only_from": Only can exists declared elements,
+empty list is valid
+"all_of": Must exist all the declared elements
+"exclusively": Must exist all and only the declared elements}
 
 \item{empty_ok}{If is acceptable to be empty}
 

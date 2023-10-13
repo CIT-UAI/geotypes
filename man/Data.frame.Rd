@@ -8,7 +8,6 @@ Data.frame(
   columns = list(),
   default_type = typed::Any(),
   select = "any_of",
-  only_cols = FALSE,
   empty_ok = TRUE,
   null_ok = FALSE,
   anyNA = FALSE,
@@ -16,13 +15,18 @@ Data.frame(
 )
 }
 \arguments{
-\item{columns}{List where each element is a column where it must have a declared type, ex list(a = typed::Double())}
+\item{columns}{List where each element is a column where
+it must have a declared type, ex list(a = typed::Double())}
 
-\item{default_type}{On elements not declared on types, this will be the default one}
+\item{default_type}{On elements not declared
+on types, this will be the default one}
 
-\item{select}{if "all_of" all the elements declared on types must exists}
-
-\item{only_cols}{If must exists all and only the columns declared on types}
+\item{select}{Set the relations of the declared columns and the existing ones
+"any_of": Can exists any columns on the dataframe
+"only_from": Can only exists declared columns
+(don't need to exists all of them), empty df is valid
+"all_of": Must exists at least all the declared columns
+"exclusively": Must exists and only the declared columns}
 
 \item{empty_ok}{If is acceptable to be empty}
 
