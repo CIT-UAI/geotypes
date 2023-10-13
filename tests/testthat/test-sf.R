@@ -109,7 +109,7 @@ sf_df_opts <-
     select = "all_of"
   )
 
-test_that("Data.frame other table opts Right", {
+test_that("SF sf works with Data.frame Right", {
   expect_no_error({
     do.call(Data.frame, sf_df_opts)(sf_example)
   })

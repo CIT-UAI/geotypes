@@ -11,7 +11,8 @@ RoxygenNote: 7.2.3
 Suggests: 
     spelling,
     spsUtil,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    waldo
 Config/testthat/edition: 3
 Imports:
     rlang,
@@ -22,6 +23,7 @@ Imports:
 Language: en-US
 Collate: 
     'base_types.R'
+    'compare_vectors.R'
     'geotypes-package.R'
     'ignore.R'
     'sf.R'

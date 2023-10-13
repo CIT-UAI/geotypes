@@ -63,14 +63,17 @@ geotypes::List(
  default_type = typed::Integer(),
  #If "all_of", the list must contain all the elements in the types param
  select = "any_of",
- #If TRUE, it can only exists and all of them the values and types declared on the types param
- only_vals = FALSE,
  empty_ok = TRUE,
  null_ok = TRUE,
  anyNA = FALSE
 )
 ```
 
+Possible values for select:
+- any_of: Can exist any elements
+- only_from: Can exist only elements declared on "types", empty list is valid
+- all_of: Must exists all the elements declared on "types"
+- exclusively: Must exist all and only declared elements on "types"
 
 Lists are complex type of elements, because they are used without taking in consideration technical details, similar in how Lists handle to itself.
 
@@ -131,14 +134,10 @@ Follow the same rules, just remember it does not check if the named elements fol
 l1 <- list(a = 1:10, 5:6, b = "hi", 5:6, "ho")
 ```
 
-
 Here will not pass, because the non-named elements must follow the position and the type, the second element on ```types``` is non-named and must be double.
 
 
 ### Data.frame
-
-
-
 
 ```R
 geotypes::Data.frame(
@@ -152,14 +151,17 @@ geotypes::Data.frame(
  default_type = typed::Integer(),
  #If "all_of", the df must contain all the columns in the columns param
  select = "any_of",
- #If TRUE, it can only and all of them the the values and types declared on the columns param
- only_cols = FALSE,
  empty_ok = TRUE,
  null_ok = TRUE,
  anyNA = FALSE
 )
 ```
 
+Possible values for select:
+- any_of: Can exist any columns
+- only_from: Can exist only columns declared on "columns", empty df is valid
+- all_of: Must exists all the columns declared on "columns"
+- exclusively: Must exist all and only declared columns on "columns"
 
 ## SF
 

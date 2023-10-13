@@ -1,5 +1,3 @@
-
-
 test_that("DataFrame Columns Right", {
   expect_no_error({
     Data.frame(
@@ -8,8 +6,7 @@ test_that("DataFrame Columns Right", {
         b = typed::Any(),
         c = typed::Integer()
       ),
-      select = "any_of",
-      only_cols = FALSE
+      select = "any_of"
     )(
       data.frame(
         a = as.double(1:10),
@@ -28,8 +25,7 @@ test_that("DataFrame Columns Bad", {
         b = typed::Any(),
         c = typed::Integer()
       ),
-      select = "any_of",
-      only_cols = FALSE
+      select = "any_of"
     )(
       data.frame(
         a = as.integer(1:10),
@@ -48,8 +44,7 @@ test_that("DataFrame any_of", {
         b = typed::Any(),
         c = typed::Integer()
       ),
-      select = "any_of",
-      only_cols = FALSE
+      select = "any_of"
     )(
       data.frame(
         a = as.double(1:10),
@@ -65,8 +60,7 @@ test_that("DataFrame all_of Right", {
       columns = list(
         a = typed::Double()
       ),
-      select = "all_of",
-      only_cols = FALSE
+      select = "all_of"
     )(
       data.frame(
         a = as.double(1:10),
@@ -84,8 +78,7 @@ test_that("DataFrame all_of Bad", {
         a = typed::Double(),
         b = typed::Any()
       ),
-      select = "all_of",
-      only_cols = FALSE
+      select = "all_of"
     )(
       data.frame(
         b = 1:10,
@@ -95,14 +88,112 @@ test_that("DataFrame all_of Bad", {
   })
 })
 
-test_that("DataFrame only_cols Bad", {
+test_that("DataFrame all_of empty Right 1", {
+  expect_no_error({
+    Data.frame(
+      columns = list(),
+      select = "all_of"
+    )(
+      data.frame()
+    )
+  })
+})
+
+test_that("DataFrame all_of empty Right 2", {
+  expect_no_error({
+    Data.frame(
+      columns = list(),
+      select = "all_of"
+    )(
+      data.frame(
+        b = 1:10
+      )
+    )
+  })
+})
+
+test_that("DataFrame only_from Right", {
+  expect_no_error({
+    Data.frame(
+      columns = list(
+        a = typed::Double(),
+        b = typed::Integer()
+      ),
+      select = "only_from"
+    )(
+      data.frame(
+        a = as.double(1:10)
+      )
+    )
+  })
+})
+
+test_that("DataFrame only_from Bad", {
   expect_error({
     Data.frame(
       columns = list(
         a = typed::Double(),
         b = typed::Any()
       ),
-      only_cols = TRUE
+      select = "only_from"
+    )(
+      data.frame(
+        b = 1:10,
+        c = as.integer(1:10)
+      )
+    )
+  })
+})
+
+test_that("DataFrame only_from empty Right", {
+  expect_no_error({
+    Data.frame(
+      columns = list(),
+      select = "only_from"
+    )(
+      data.frame()
+    )
+  })
+})
+
+test_that("DataFrame only_from empty Bad", {
+  expect_error({
+    Data.frame(
+      columns = list(),
+      select = "only_from"
+    )(
+      data.frame(
+        b = 1:10
+      )
+    )
+  })
+})
+
+test_that("DataFrame exclusively Right", {
+  expect_no_error({
+    Data.frame(
+      columns = list(
+        a = typed::Double(),
+        b = typed::Any()
+      ),
+      select = "exclusively"
+    )(
+      data.frame(
+        a = as.double(1:10),
+        b = 1:10
+      )
+    )
+  })
+})
+
+test_that("DataFrame exclusively Bad", {
+  expect_error({
+    Data.frame(
+      columns = list(
+        a = typed::Double(),
+        b = typed::Any()
+      ),
+      select = "exclusively"
     )(
       data.frame(
         a = as.double(1:10),
@@ -113,18 +204,25 @@ test_that("DataFrame only_cols Bad", {
   })
 })
 
-test_that("DataFrame only_cols Right", {
+test_that("DataFrame exclusively empty Right", {
   expect_no_error({
     Data.frame(
-      columns = list(
-        a = typed::Double(),
-        b = typed::Any()
-      ),
-      only_cols = TRUE
+      columns = list(),
+      select = "exclusively"
+    )(
+      data.frame()
+    )
+  })
+})
+
+test_that("DataFrame exclusively empty Bad", {
+  expect_error({
+    Data.frame(
+      columns = list(),
+      select = "exclusively"
     )(
       data.frame(
-        a = as.double(1:10),
-        b = 1:10
+        a = as.double(1:10)
       )
     )
   })
@@ -219,6 +317,24 @@ test_that("List types Extra elements Right", {
         b = "j",
         c = 10,
         as.integer(20)
+      )
+    )
+  })
+})
+
+test_that("List more types than elements Right", {
+  expect_no_error({
+    List(
+      types = list(
+        typed::Integer(),
+        typed::Integer(),
+        a = typed::Double(),
+        b = typed::Any()
+      )
+    )(
+      list(
+        as.integer(1),
+        a = as.double(2)
       )
     )
   })
@@ -369,8 +485,7 @@ test_that("List select all_of Named Bad", {
   })
 })
 
-
-test_that("List only_vals Order Right", {
+test_that("List select only_from Right", {
   expect_no_error({
     List(
       types = list(
@@ -379,7 +494,67 @@ test_that("List only_vals Order Right", {
         typed::Double(),
         b = typed::Double()
       ),
-      only_vals = TRUE
+      select = "only_from"
+    )(
+      list(
+        as.integer(1),
+        a = 10
+      )
+    )
+  })
+})
+
+test_that("List select only_from Number Bad", {
+  expect_error({
+    List(
+      types = list(
+        typed::Integer(),
+        a = typed::Any(),
+        typed::Double(),
+        b = typed::Double()
+      ),
+      select = "only_from"
+    )(
+      list(
+        a = 10,
+        as.integer(1),
+        b = as.double(4)
+      )
+    )
+  })
+})
+
+test_that("List select only_from Named Bad", {
+  expect_error({
+    List(
+      types = list(
+        typed::Integer(),
+        a = typed::Any(),
+        typed::Double(),
+        b = typed::Double()
+      ),
+      select = "only_from"
+    )(
+      list(
+        as.integer(1),
+        c = as.double(4),
+        as.double(1),
+        b = as.double(4)
+      )
+    )
+  })
+})
+
+test_that("List select exclusively Order Right", {
+  expect_no_error({
+    List(
+      types = list(
+        typed::Integer(),
+        a = typed::Any(),
+        typed::Double(),
+        b = typed::Double()
+      ),
+      select = "exclusively"
     )(
       list(
         as.integer(1),
@@ -391,7 +566,7 @@ test_that("List only_vals Order Right", {
   })
 })
 
-test_that("List only_vals Unorder Right", {
+test_that("List select exclusively Unorder Right", {
   expect_no_error({
     List(
       types = list(
@@ -400,7 +575,7 @@ test_that("List only_vals Unorder Right", {
         typed::Double(),
         b = typed::Integer()
       ),
-      only_vals = TRUE
+      select = "exclusively"
     )(
       list(
         as.integer(1),
@@ -412,7 +587,7 @@ test_that("List only_vals Unorder Right", {
   })
 })
 
-test_that("List only_vals Named Bad", {
+test_that("List select exclusively Named Bad", {
   expect_error({
     List(
       types = list(
@@ -421,7 +596,7 @@ test_that("List only_vals Named Bad", {
         typed::Double(),
         b = typed::Double()
       ),
-      only_vals = TRUE
+      select = "exclusively"
     )(
       list(
         as.integer(1),
@@ -432,7 +607,7 @@ test_that("List only_vals Named Bad", {
   })
 })
 
-test_that("List only_vals Numbered Bad", {
+test_that("List exclusively Numbered Bad", {
   expect_error({
     List(
       types = list(
@@ -442,7 +617,7 @@ test_that("List only_vals Numbered Bad", {
         b = typed::Double(),
         typed::Integer()
       ),
-      only_vals = TRUE
+      select = "exclusively"
     )(
       list(
         as.integer(1),
