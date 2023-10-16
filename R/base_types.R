@@ -102,7 +102,7 @@ List <- typed::as_assertion_factory(function(
       assert <- default_type
     }
     tryCatch(assert(value[[name]]), error = function(e) {
-      stop(sprintf("element %s %s", i, e$message), call. = FALSE)
+      stop(sprintf("element %s %s", name, e$message), call. = FALSE)
     })
   }
 
@@ -113,7 +113,7 @@ List <- typed::as_assertion_factory(function(
       assert <- default_type
     }
     tryCatch(assert(value[[id]]), error = function(e) {
-      stop(sprintf("element %s %s", i, e$message), call. = FALSE)
+      stop(sprintf("element %s %s", id, e$message), call. = FALSE)
     })
   }
 
