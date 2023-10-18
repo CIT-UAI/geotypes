@@ -49,6 +49,11 @@ List <- typed::as_assertion_factory(function(
   value_number_id_part <- c()
   names_value <- names(value)
 
+  #If the list does not have any named part
+  if (is.null(names_value)) {
+    names_value <- rep("", length(value))
+  }
+
   for (name_id in seq_len(length(names_value))) {
     if (
       is.null(names_value[[name_id]]) ||
@@ -66,6 +71,11 @@ List <- typed::as_assertion_factory(function(
   # In this case, the id is the same as the name
   types_number_id_part <- c()
   names_types <- names(types)
+
+  #If the list does not have any named part
+  if (is.null(names_types)) {
+    names_types <- rep("", length(types))
+  }
 
   for (name_id in seq_len(length(names_types))) {
     if (
@@ -102,7 +112,7 @@ List <- typed::as_assertion_factory(function(
       assert <- default_type
     }
     tryCatch(assert(value[[name]]), error = function(e) {
-      stop(sprintf("element %s %s", i, e$message), call. = FALSE)
+      stop(sprintf("element %s %s", name, e$message), call. = FALSE)
     })
   }
 
@@ -113,7 +123,7 @@ List <- typed::as_assertion_factory(function(
       assert <- default_type
     }
     tryCatch(assert(value[[id]]), error = function(e) {
-      stop(sprintf("element %s %s", i, e$message), call. = FALSE)
+      stop(sprintf("element %s %s", id, e$message), call. = FALSE)
     })
   }
 

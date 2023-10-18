@@ -302,6 +302,70 @@ test_that("List types Right", {
   })
 })
 
+test_that("List only numbers right", {
+  expect_no_error({
+    List(
+      types = list(
+        typed::Integer(),
+        typed::Double()
+      )
+    )(
+      list(
+        as.integer(1),
+        as.double(2)
+      )
+    )
+  })
+})
+
+test_that("List only numbers bad", {
+  expect_error({
+    List(
+      types = list(
+        typed::Integer(),
+        typed::Double()
+      )
+    )(
+      list(
+        as.integer(1),
+        as.integer(2)
+      )
+    )
+  })
+})
+
+test_that("List only named right", {
+  expect_no_error({
+    List(
+      types = list(
+        a = typed::Integer(),
+        b = typed::Double()
+      )
+    )(
+      list(
+        a = as.integer(1),
+        b = as.double(2)
+      )
+    )
+  })
+})
+
+test_that("List only named bad", {
+  expect_error({
+    List(
+      types = list(
+        a = typed::Integer(),
+        b = typed::Double()
+      )
+    )(
+      list(
+        a = as.integer(1),
+        b = as.integer(2)
+      )
+    )
+  })
+})
+
 test_that("List types Extra elements Right", {
   expect_no_error({
     List(
@@ -398,6 +462,70 @@ test_that("List default_type Bad", {
     )(
       list(
         as.integer(1),
+        a = as.double(2)
+      )
+    )
+  })
+})
+
+test_that("List default_type number Right", {
+  expect_no_error({
+    List(
+      types = list(
+        typed::Integer()
+      ),
+      default_type = typed::Integer()
+    )(
+      list(
+        as.integer(1),
+        as.integer(2)
+      )
+    )
+  })
+})
+
+test_that("List default_type number Bad", {
+  expect_error({
+    List(
+      types = list(
+        typed::Integer()
+      ),
+      default_type = typed::Integer()
+    )(
+      list(
+        as.integer(1),
+        as.double(2)
+      )
+    )
+  })
+})
+
+test_that("List default_type named Right", {
+  expect_no_error({
+    List(
+      types = list(
+        a = typed::Integer()
+      ),
+      default_type = typed::Integer()
+    )(
+      list(
+        a = as.integer(1),
+        b = as.integer(2)
+      )
+    )
+  })
+})
+
+test_that("List default_type named Bad", {
+  expect_error({
+    List(
+      types = list(
+        a = typed::Integer()
+      ),
+      default_type = typed::Integer()
+    )(
+      list(
+        b = as.integer(1),
         a = as.double(2)
       )
     )
@@ -659,5 +787,13 @@ test_that("List empty_ok Bad", {
     )(
       list()
     )
+  })
+})
+
+test_that("Issue 11 reprex", {
+  expect_error({
+    List(
+      default_type = typed::Integer()
+    )(list(c(1.5)))
   })
 })
