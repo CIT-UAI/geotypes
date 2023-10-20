@@ -790,6 +790,15 @@ test_that("List empty_ok Bad", {
   })
 })
 
+#In typed you can mix them together,
+#here for now, not do it until there
+#is a good reason for it
+test_that("Lists are not dataframes", {
+  expect_error(
+    geotypes::List()(data.frame())
+  )
+})
+
 test_that("Issue 11 reprex", {
   expect_error({
     List(
