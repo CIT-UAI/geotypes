@@ -27,7 +27,11 @@ List <- typed::as_assertion_factory(function(
     empty_ok = FALSE,
     null_ok = FALSE,
     anyNA = FALSE) {
-  value <- typed::List(null_ok = null_ok, anyNA = anyNA)(value)
+  value <- typed::List(
+    null_ok = null_ok,
+    anyNA = anyNA,
+    data_frame_ok = FALSE
+  )(value)
 
   if (null_ok && is.null(value)) {
     return(NULL)
