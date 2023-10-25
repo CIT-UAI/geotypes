@@ -170,8 +170,8 @@ Data.frame <- typed::as_assertion_factory(function(
     return(NULL)
   }
 
-  if (!empty_ok && (nrow(value) == 0)) {
-    if (empty) {
+  if (nrow(value) == 0) {
+    if (empty_ok) {
       return(value)
     } else {
       e <- sprintf(
