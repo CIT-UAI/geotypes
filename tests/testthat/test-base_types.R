@@ -207,8 +207,11 @@ test_that("DataFrame exclusively Bad", {
 test_that("DataFrame exclusively empty Right", {
   expect_no_error({
     Data.frame(
-      columns = list(),
-      select = "exclusively"
+      columns = c(
+        a = typed::Any()
+      ),
+      select = "exclusively",
+      empty_ok = TRUE
     )(
       data.frame()
     )
@@ -219,7 +222,8 @@ test_that("DataFrame exclusively empty Bad", {
   expect_error({
     Data.frame(
       columns = list(),
-      select = "exclusively"
+      select = "exclusively",
+      empty_ok = FALSE
     )(
       data.frame(
         a = as.double(1:10)

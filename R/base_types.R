@@ -170,18 +170,22 @@ Data.frame <- typed::as_assertion_factory(function(
     return(NULL)
   }
 
-  if (!empty_ok && (nrow(value) == 0)) {
-    e <- sprintf(
-      "%s\n%s",
-      "empty dataframe",
-      waldo::compare(
-        nrow(value),
-        ">0",
-        x_arg = "nrow(value)",
-        y_arg = "expected"
+  if (nrow(value) == 0) {
+    if (empty_ok) {
+      return(value)
+    } else {
+      e <- sprintf(
+        "%s\n%s",
+        "empty dataframe",
+        waldo::compare(
+          nrow(value),
+          ">0",
+          x_arg = "nrow(value)",
+          y_arg = "expected"
+        )
       )
-    )
-    stop(e, call. = FALSE)
+      stop(e, call. = FALSE)
+    }
   }
 
   name_cols <- names(columns)
