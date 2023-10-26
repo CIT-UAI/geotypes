@@ -22,7 +22,8 @@ geotypes::Data.frame(
     id = typed::Integer(),
     node = typed::Integer()
   ),
-  only_cols = TRUE
+  #We only must have this two columns
+  select = "exclusively
 )
 ```
 
