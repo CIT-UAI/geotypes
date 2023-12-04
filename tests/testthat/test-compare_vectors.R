@@ -1,5 +1,5 @@
 test_that("throw compare_vectors error", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     wrong_columns(c(), c())
   })
 })
@@ -17,7 +17,7 @@ test_that("compare_vectors all_of right", {
 })
 
 test_that("compare_vectors all_of bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors(c(1), c(1, 2), "all_of")
   })
 })
@@ -29,7 +29,7 @@ test_that("compare_vectors only_from right", {
 })
 
 test_that("compare_vectors only_from bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors(c(1, 4), c(1, 2), "only_from")
   })
 })
@@ -41,7 +41,7 @@ test_that("compare_vectors exclusively right", {
 })
 
 test_that("compare_vectors exclusively bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors(c(1, 2, 4), c(1, 2), "exclusively")
   })
 })
@@ -78,13 +78,13 @@ test_that("compare_vectors_only_from", {
     compare_vectors_only_from(c(), c(1))
   })
 
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_only_from(c(2), c())
   })
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_only_from(c(2), c(1))
   })
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_only_from(c(1, 2), c(1))
   })
 })
@@ -106,16 +106,16 @@ test_that("compare_vectors_all_of", {
     compare_vectors_all_of(c(1, 2), c(1, 2))
   })
 
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_all_of(c(), c(1))
   })
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_all_of(c(2), c(1))
   })
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_all_of(c(1, 3), c(1, 2))
   })
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_all_of(c(4, 3), c(1, 2))
   })
 })
@@ -131,16 +131,16 @@ test_that("compare_vectors_exclusively", {
     compare_vectors_exclusively(c(1, 2), c(1, 2))
   })
 
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_exclusively(c(), c(1))
   })
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_exclusively(c(1), c())
   })
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_exclusively(c(1, 2), c(1))
   })
-  expect_error({
+  expect_snapshot(error = TRUE, {
     compare_vectors_exclusively(c(1), c(1, 2))
   })
 })

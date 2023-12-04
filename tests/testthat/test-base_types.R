@@ -1,5 +1,11 @@
 test_that("DataFrame Columns Right", {
-  expect_no_error({
+  ret <-
+    data.frame(
+      a = as.double(1:10),
+      b = 1:10,
+      c = as.integer(1:10)
+    )
+  expect_equal(
     Data.frame(
       columns = list(
         a = typed::Double(),
@@ -7,18 +13,13 @@ test_that("DataFrame Columns Right", {
         c = typed::Integer()
       ),
       select = "any_of"
-    )(
-      data.frame(
-        a = as.double(1:10),
-        b = 1:10,
-        c = as.integer(1:10)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("DataFrame Columns Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     Data.frame(
       columns = list(
         a = typed::Double(),
@@ -37,7 +38,12 @@ test_that("DataFrame Columns Bad", {
 })
 
 test_that("DataFrame any_of", {
-  expect_no_error({
+  ret <-
+    data.frame(
+      a = as.double(1:10),
+      d = as.integer(1:10)
+    )
+  expect_equal(
     Data.frame(
       columns = list(
         a = typed::Double(),
@@ -45,34 +51,31 @@ test_that("DataFrame any_of", {
         c = typed::Integer()
       ),
       select = "any_of"
-    )(
-      data.frame(
-        a = as.double(1:10),
-        d = as.integer(1:10)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("DataFrame all_of Right", {
-  expect_no_error({
+  ret <-
+    data.frame(
+      a = as.double(1:10),
+      b = 1:10,
+      c = as.integer(1:10)
+    )
+  expect_equal(
     Data.frame(
       columns = list(
         a = typed::Double()
       ),
       select = "all_of"
-    )(
-      data.frame(
-        a = as.double(1:10),
-        b = 1:10,
-        c = as.integer(1:10)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("DataFrame all_of Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     Data.frame(
       columns = list(
         a = typed::Double(),
@@ -89,47 +92,40 @@ test_that("DataFrame all_of Bad", {
 })
 
 test_that("DataFrame all_of empty Right 1", {
-  expect_no_error({
+  expect_equal(
     Data.frame(
       columns = list(),
       select = "all_of"
-    )(
-      data.frame()
-    )
-  })
+    )(data.frame()),
+    data.frame()
+  )
 })
 
 test_that("DataFrame all_of empty Right 2", {
-  expect_no_error({
+  expect_equal(
     Data.frame(
       columns = list(),
       select = "all_of"
-    )(
-      data.frame(
-        b = 1:10
-      )
-    )
-  })
+    )(data.frame(b = 1:10)),
+    data.frame(b = 1:10)
+  )
 })
 
 test_that("DataFrame only_from Right", {
-  expect_no_error({
+  expect_equal(
     Data.frame(
       columns = list(
         a = typed::Double(),
         b = typed::Integer()
       ),
       select = "only_from"
-    )(
-      data.frame(
-        a = as.double(1:10)
-      )
-    )
-  })
+    )(data.frame(a = as.double(1:10))),
+    data.frame(a = as.double(1:10))
+  )
 })
 
 test_that("DataFrame only_from Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     Data.frame(
       columns = list(
         a = typed::Double(),
@@ -146,18 +142,17 @@ test_that("DataFrame only_from Bad", {
 })
 
 test_that("DataFrame only_from empty Right", {
-  expect_no_error({
+  expect_equal(
     Data.frame(
       columns = list(),
       select = "only_from"
-    )(
-      data.frame()
-    )
-  })
+    )(data.frame()),
+    data.frame()
+  )
 })
 
 test_that("DataFrame only_from empty Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     Data.frame(
       columns = list(),
       select = "only_from"
@@ -170,24 +165,25 @@ test_that("DataFrame only_from empty Bad", {
 })
 
 test_that("DataFrame exclusively Right", {
-  expect_no_error({
+  ret <-
+    data.frame(
+      a = as.double(1:10),
+      b = 1:10
+    )
+  expect_equal(
     Data.frame(
       columns = list(
         a = typed::Double(),
         b = typed::Any()
       ),
       select = "exclusively"
-    )(
-      data.frame(
-        a = as.double(1:10),
-        b = 1:10
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("DataFrame exclusively Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     Data.frame(
       columns = list(
         a = typed::Double(),
@@ -205,21 +201,20 @@ test_that("DataFrame exclusively Bad", {
 })
 
 test_that("DataFrame exclusively empty Right", {
-  expect_no_error({
+  expect_equal(
     Data.frame(
       columns = c(
         a = typed::Any()
       ),
       select = "exclusively",
       empty_ok = TRUE
-    )(
-      data.frame()
-    )
-  })
+    )(data.frame()),
+    data.frame()
+  )
 })
 
 test_that("DataFrame exclusively empty Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     Data.frame(
       columns = list(),
       select = "exclusively",
@@ -233,7 +228,7 @@ test_that("DataFrame exclusively empty Bad", {
 })
 
 test_that("DataFrame empty_ok Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     Data.frame(
       empty_ok = FALSE
     )(
@@ -243,35 +238,35 @@ test_that("DataFrame empty_ok Bad", {
 })
 
 test_that("DataFrame empty_ok Right", {
-  expect_no_error({
+  expect_equal(
     Data.frame(
       empty_ok = TRUE
-    )(
-      data.frame()
-    )
-  })
+    )(data.frame()),
+    data.frame()
+  )
 })
 
 test_that("DataFrame default_type Right", {
-  expect_no_error({
+  ret <-
+    data.frame(
+      a = as.double(1:10),
+      b = 1:10,
+      c = as.integer(1:10)
+    )
+  expect_equal(
     Data.frame(
       columns = list(
         a = typed::Double(),
         b = typed::Any()
       ),
       default_type = typed::Integer()
-    )(
-      data.frame(
-        a = as.double(1:10),
-        b = 1:10,
-        c = as.integer(1:10)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("DataFrame default_type Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     Data.frame(
       columns = list(
         a = typed::Double(),
@@ -289,41 +284,43 @@ test_that("DataFrame default_type Bad", {
 })
 
 test_that("List types Right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      a = as.double(2),
+      b = "j"
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer(),
         a = typed::Double(),
         b = typed::Any()
       )
-    )(
-      list(
-        as.integer(1),
-        a = as.double(2),
-        b = "j"
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List only numbers right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      as.double(2)
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer(),
         typed::Double()
       )
-    )(
-      list(
-        as.integer(1),
-        as.double(2)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List only numbers bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer(),
@@ -339,23 +336,24 @@ test_that("List only numbers bad", {
 })
 
 test_that("List only named right", {
-  expect_no_error({
+  ret <-
+    list(
+      a = as.integer(1),
+      b = as.double(2)
+    )
+  expect_equal(
     List(
       types = list(
         a = typed::Integer(),
         b = typed::Double()
       )
-    )(
-      list(
-        a = as.integer(1),
-        b = as.double(2)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List only named bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         a = typed::Integer(),
@@ -371,27 +369,33 @@ test_that("List only named bad", {
 })
 
 test_that("List types Extra elements Right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      a = as.double(2),
+      b = "j",
+      c = 10,
+      as.integer(20)
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer(),
         a = typed::Double(),
         b = typed::Any()
       )
-    )(
-      list(
-        as.integer(1),
-        a = as.double(2),
-        b = "j",
-        c = 10,
-        as.integer(20)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List more types than elements Right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      a = as.double(2)
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer(),
@@ -399,17 +403,13 @@ test_that("List more types than elements Right", {
         a = typed::Double(),
         b = typed::Any()
       )
-    )(
-      list(
-        as.integer(1),
-        a = as.double(2)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List types Numbered Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer(),
@@ -425,7 +425,7 @@ test_that("List types Numbered Bad", {
 })
 
 test_that("List types Named Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer(),
@@ -441,23 +441,24 @@ test_that("List types Named Bad", {
 })
 
 test_that("List default_type Right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      a = as.integer(2)
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer()
       ),
       default_type = typed::Integer()
-    )(
-      list(
-        as.integer(1),
-        a = as.integer(2)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List default_type Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer()
@@ -473,23 +474,24 @@ test_that("List default_type Bad", {
 })
 
 test_that("List default_type number Right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      as.integer(2)
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer()
       ),
       default_type = typed::Integer()
-    )(
-      list(
-        as.integer(1),
-        as.integer(2)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List default_type number Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer()
@@ -505,23 +507,24 @@ test_that("List default_type number Bad", {
 })
 
 test_that("List default_type named Right", {
-  expect_no_error({
+  ret <-
+    list(
+      a = as.integer(1),
+      b = as.integer(2)
+    )
+  expect_equal(
     List(
       types = list(
         a = typed::Integer()
       ),
       default_type = typed::Integer()
-    )(
-      list(
-        a = as.integer(1),
-        b = as.integer(2)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List default_type named Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         a = typed::Integer()
@@ -537,26 +540,35 @@ test_that("List default_type named Bad", {
 })
 
 test_that("List select any_of Right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      as.double(2),
+      3,
+      a = 10
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer(),
         typed::Double()
       ),
       select = "any_of"
-    )(
-      list(
-        as.integer(1),
-        as.double(2),
-        3,
-        a = 10
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List select all_of Right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      a = 10,
+      as.double(2),
+      b = as.double(4),
+      c = 10
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer(),
@@ -565,20 +577,13 @@ test_that("List select all_of Right", {
         b = typed::Double()
       ),
       select = "all_of"
-    )(
-      list(
-        as.integer(1),
-        a = 10,
-        as.double(2),
-        b = as.double(4),
-        c = 10
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List select all_of Number Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer(),
@@ -598,7 +603,7 @@ test_that("List select all_of Number Bad", {
 })
 
 test_that("List select all_of Named Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer(),
@@ -618,7 +623,12 @@ test_that("List select all_of Named Bad", {
 })
 
 test_that("List select only_from Right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      a = 10
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer(),
@@ -627,17 +637,13 @@ test_that("List select only_from Right", {
         b = typed::Double()
       ),
       select = "only_from"
-    )(
-      list(
-        as.integer(1),
-        a = 10
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List select only_from Number Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer(),
@@ -657,7 +663,7 @@ test_that("List select only_from Number Bad", {
 })
 
 test_that("List select only_from Named Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer(),
@@ -678,7 +684,14 @@ test_that("List select only_from Named Bad", {
 })
 
 test_that("List select exclusively Order Right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      a = 10,
+      as.double(2),
+      b = as.double(4)
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer(),
@@ -687,19 +700,20 @@ test_that("List select exclusively Order Right", {
         b = typed::Double()
       ),
       select = "exclusively"
-    )(
-      list(
-        as.integer(1),
-        a = 10,
-        as.double(2),
-        b = as.double(4)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List select exclusively Unorder Right", {
-  expect_no_error({
+  ret <-
+    list(
+      as.integer(1),
+      b = as.integer(10),
+      as.double(2),
+      a = as.double(4)
+    )
+  expect_equal(
     List(
       types = list(
         typed::Integer(),
@@ -708,19 +722,13 @@ test_that("List select exclusively Unorder Right", {
         b = typed::Integer()
       ),
       select = "exclusively"
-    )(
-      list(
-        as.integer(1),
-        b = as.integer(10),
-        as.double(2),
-        a = as.double(4)
-      )
-    )
-  })
+    )(ret),
+    ret
+  )
 })
 
 test_that("List select exclusively Named Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer(),
@@ -740,7 +748,7 @@ test_that("List select exclusively Named Bad", {
 })
 
 test_that("List exclusively Numbered Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer(),
@@ -763,7 +771,7 @@ test_that("List exclusively Numbered Bad", {
 
 
 test_that("List empty_ok Right", {
-  expect_no_error({
+  expect_equal(
     List(
       types = list(
         typed::Integer(),
@@ -772,14 +780,13 @@ test_that("List empty_ok Right", {
         b = typed::Integer()
       ),
       empty_ok = TRUE
-    )(
-      list()
-    )
-  })
+    )(list()),
+    list()
+  )
 })
 
 test_that("List empty_ok Bad", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       types = list(
         typed::Integer(),
@@ -798,13 +805,13 @@ test_that("List empty_ok Bad", {
 #here for now, not do it until there
 #is a good reason for it
 test_that("Lists are not dataframes", {
-  expect_error(
-    geotypes::List()(data.frame())
-  )
+  expect_snapshot(error = TRUE, {
+    List()(data.frame())
+  })
 })
 
 test_that("Issue 11 reprex", {
-  expect_error({
+  expect_snapshot(error = TRUE, {
     List(
       default_type = typed::Integer()
     )(list(c(1.5)))
