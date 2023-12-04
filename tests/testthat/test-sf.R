@@ -87,16 +87,16 @@ test_that("SF sfc types Bad", {
   })
 })
 
-sf_example <- system.file("shape/nc.shp", package="sf") %.>%
+sf_example <- system.file("shape/nc.shp", package = "sf") %.>%
   sf::st_read(., quiet = TRUE)
 
 #This one have MULTIPOLYGONS, POLYGONS, POINTS
 #Use spsUtil just to hide a warning from sf
 sf_example_multi <-  spsUtil::quiet({
   sf_example %.>%
-  sf::st_cast(., "POLYGON", warn = FALSE) %.>%
-  rbind(., sf::st_centroid(.)) %.>%
-  rbind(., sf_example)
+    sf::st_cast(., "POLYGON", warn = FALSE) %.>%
+    rbind(., sf::st_centroid(.)) %.>%
+    rbind(., sf_example)
 })
 
 sf_df_opts <-
@@ -210,7 +210,7 @@ test_that("SF sf active_types Bad", {
 test_that("SF sf active_types multi Right", {
   expect_equal(
     sf_sf(
-      active_types =c(
+      active_types = c(
         "MULTIPOLYGON",
         "POLYGON",
         "POINT"
@@ -223,7 +223,7 @@ test_that("SF sf active_types multi Right", {
 test_that("SF sf active_types multi Bad", {
   expect_snapshot(error = TRUE, {
     sf_sf(
-      active_types =c(
+      active_types = c(
         "MULTIPOLYGON",
         "POLYGON"
       )
@@ -234,7 +234,7 @@ test_that("SF sf active_types multi Bad", {
 test_that("SF sf active_types multi extra Right", {
   expect_equal(
     sf_sf(
-      active_types =c(
+      active_types = c(
         "MULTIPOLYGON",
         "POLYGON",
         "POINT",

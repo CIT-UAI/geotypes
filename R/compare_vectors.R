@@ -4,7 +4,7 @@ compare_vectors <- function(vec1, vec2, select) {
   if (select == "exclusively") {
     compare_vectors_exclusively(vec1, vec2)
   } else if (select == "all_of") {
-     compare_vectors_all_of(vec1, vec2)
+    compare_vectors_all_of(vec1, vec2)
   } else if (select == "only_from") {
     compare_vectors_only_from(vec1, vec2)
   } else if (select == "any_of") {
@@ -14,7 +14,7 @@ compare_vectors <- function(vec1, vec2, select) {
   }
 }
 
-wrong_columns <- function(vec1, vec2){
+wrong_columns <- function(vec1, vec2) {
   e <- sprintf(
     "%s\n%s",
     "Columns does not match",

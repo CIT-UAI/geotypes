@@ -19,14 +19,15 @@
 #' @param ... Parsed to typed assertion factory
 #' @return Assertion for List
 #' @export
-List <- typed::as_assertion_factory(function(
-    value,
-    types = list(),
-    default_type = typed::Any(),
-    select = "any_of",
-    empty_ok = FALSE,
-    null_ok = FALSE,
-    anyNA = FALSE) {
+List <- typed::as_assertion_factory(function( #nolint
+  value,
+  types = list(),
+  default_type = typed::Any(),
+  select = "any_of",
+  empty_ok = FALSE,
+  null_ok = FALSE,
+  anyNA = FALSE #nolint
+) {
   value <- typed::List(
     null_ok = null_ok,
     anyNA = anyNA,
@@ -155,14 +156,15 @@ List <- typed::as_assertion_factory(function(
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for Dataframe
 #' @export
-Data.frame <- typed::as_assertion_factory(function(
-    value,
-    columns = list(),
-    default_type = typed::Any(),
-    select = "any_of",
-    empty_ok = TRUE,
-    null_ok = FALSE,
-    anyNA = FALSE) {
+Data.frame <- typed::as_assertion_factory(function( #nolint
+  value,
+  columns = list(),
+  default_type = typed::Any(),
+  select = "any_of",
+  empty_ok = TRUE,
+  null_ok = FALSE,
+  anyNA = FALSE #nolint
+) {
 
   value <- typed::Data.frame(null_ok = null_ok, anyNA = anyNA)(value)
 
