@@ -28,11 +28,17 @@ List <- typed::as_assertion_factory(function( #nolint
   null_ok = FALSE,
   anyNA = FALSE #nolint
 ) {
-  value <- typed::List(
-    null_ok = null_ok,
-    anyNA = anyNA,
-    data_frame_ok = FALSE
-  )(value)
+
+  local({
+    params <- list(
+      null_ok = null_ok,
+      data_frame_ok = FALSE
+    )
+    if (!is.null(anyNA)) {
+      params$anyNA <- anyNA
+    }
+    value <- do.call(typed::List, params)(value)
+  })
 
   if (null_ok && is.null(value)) {
     return(NULL)
@@ -166,7 +172,15 @@ Data.frame <- typed::as_assertion_factory(function( #nolint
   anyNA = FALSE #nolint
 ) {
 
-  value <- typed::Data.frame(null_ok = null_ok, anyNA = anyNA)(value)
+  local({
+    params <- list(
+      null_ok = null_ok
+    )
+    if (!is.null(anyNA)) {
+      params$anyNA <- anyNA
+    }
+    value <- do.call(typed::Data.frame, params)(value)
+  })
 
   if (null_ok && is.null(value)) {
     return(NULL)

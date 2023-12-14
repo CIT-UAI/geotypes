@@ -259,3 +259,43 @@
       `typeof(value)`: "double" 
       `expected`:      "integer"
 
+# List must have NA bad
+
+    Code
+      List(anyNA = TRUE)(ret)
+    Condition
+      Error:
+      ! `anyNA` mismatch
+      `anyNA(value)`: FALSE
+      `expected`:     TRUE 
+
+# List must not have NA bad
+
+    Code
+      List(anyNA = FALSE)(ret)
+    Condition
+      Error:
+      ! `anyNA` mismatch
+      `anyNA(value)`: TRUE 
+      `expected`:     FALSE
+
+# Data.frame must have NA bad
+
+    Code
+      Data.frame(anyNA = TRUE)(ret)
+    Condition
+      Error:
+      ! `anyNA` mismatch
+      `anyNA(value)`: FALSE
+      `expected`:     TRUE 
+
+# Data.frame must not have NA bad
+
+    Code
+      Data.frame(anyNA = FALSE)(ret)
+    Condition
+      Error:
+      ! `anyNA` mismatch
+      `anyNA(value)`: TRUE 
+      `expected`:     FALSE
+

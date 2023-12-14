@@ -817,3 +817,55 @@ test_that("Issue 11 reprex", {
     )(list(c(1.5)))
   })
 })
+
+
+test_that("Lists ignore NA", {
+  ret <- list(1, NA)
+  expect_equal(ret, List(anyNA = NULL)(ret))
+})
+
+test_that("List must have NA good", {
+  ret <- list(1, NA)
+  expect_equal(ret, List(anyNA = TRUE)(ret))
+})
+
+test_that("List must have NA bad", {
+  ret <- list(1)
+  expect_snapshot(error = TRUE, List(anyNA = TRUE)(ret))
+})
+
+test_that("List must not have NA good", {
+  ret <- list(1, 2)
+  expect_equal(ret, List(anyNA = FALSE)(ret))
+})
+
+test_that("List must not have NA bad", {
+  ret <- list(1, NA)
+  expect_snapshot(error = TRUE, List(anyNA = FALSE)(ret))
+})
+
+
+test_that("Data.frame ignore NA", {
+  ret <- data.frame(col = c(1, NA))
+  expect_equal(ret, Data.frame(anyNA = NULL)(ret))
+})
+
+test_that("Data.frame must have NA good", {
+  ret <- data.frame(col = c(1, NA))
+  expect_equal(ret, Data.frame(anyNA = TRUE)(ret))
+})
+
+test_that("Data.frame must have NA bad", {
+  ret <- data.frame(col = c(1, 2))
+  expect_snapshot(error = TRUE, Data.frame(anyNA = TRUE)(ret))
+})
+
+test_that("Data.frame must not have NA good", {
+  ret <- data.frame(col = c(1, 2))
+  expect_equal(ret, Data.frame(anyNA = FALSE)(ret))
+})
+
+test_that("Data.frame must not have NA bad", {
+  ret <- data.frame(col = c(1, NA))
+  expect_snapshot(error = TRUE, Data.frame(anyNA = FALSE)(ret))
+})
