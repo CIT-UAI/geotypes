@@ -99,7 +99,8 @@ sf_sfc <- typed::as_assertion_factory(function(
 #' @name sf_sf
 #' @description typed for SF object from SF
 #'
-#' @param df_opts SF object is a dataframe too, this is a list where they will be parsed to the Data.frame type
+#' @param df_opts SF object is a dataframe too,
+#' this is a list where they will be parsed to the Data.frame type
 #' @param active_column Name of the active column
 #' @param active_types Possible types for the active column
 #' @param ... Parsed to assertion_factory
@@ -154,7 +155,7 @@ sf_sf <- typed::as_assertion_factory(function(
     stop(e, call. = FALSE)
   }
 
-  if (FALSE %in% ("columns" %in% names(df_opts))){
+  if (FALSE %in% ("columns" %in% names(df_opts))) {
     #If there is no df_opts, we need to include the active column
     #active_column can exist or not, but current_active_column
     #always exists, and if both exists they are the same
@@ -164,7 +165,7 @@ sf_sf <- typed::as_assertion_factory(function(
       opts
     })
   } else {
-    if (FALSE %in% (current_active_column %in% names(df_opts$columns))){
+    if (FALSE %in% (current_active_column %in% names(df_opts$columns))) {
       #If the active column is not defined, we need to add it
       df_opts$columns[[current_active_column]] <- sf_sfc(types = active_types)
     }
