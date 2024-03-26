@@ -175,6 +175,8 @@ geotypes::sf_sfg(
  #The geometry can only be this geometry types
  #If empty can be any geometry
  types = c("LINESTRING", "POLYGON")
+ #Bool, if want the geometry only be acceptable if is valid
+ only_valid = FALSE
 )
 ```
 
@@ -186,7 +188,10 @@ geotypes::sf_sfg(
 geotypes::sf_sfc(
  #Can only be a point or multilinestring
  #If empty can contain any geometries
- types = c("POINT", "MULTILINESTRING")
+ types = c("POINT", "MULTILINESTRING"),
+ #Bool, if want the geometries only be acceptable if
+ #all of them are valid
+ only_valid = FALSE
 )
 ```
 
@@ -207,8 +212,12 @@ geotypes::sf_sf(
  ),
  #The active column must be "geom"
  active_column = "geom",
- #The active column can only be multilinetring of multipolygon
- active_types = c("MULTILINESTRING", "MULTIPOLYGON")
+ #All this options will be parsed to a sf_sfc type
+ #check it for more info
+ active_opts = list(
+  "types" = c("MULTILINESTRING", "MULTIPOLYGON"),
+  "only_valid" = TRUE
+ )
 )
 ```
 
