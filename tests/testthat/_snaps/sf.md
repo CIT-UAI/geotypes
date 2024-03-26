@@ -138,3 +138,13 @@
       `sf::st_geometry_type(value[[109]])`: "POINT"                 
       `expected`:                           "MULTIPOLYGON" "POLYGON"
 
+# sf sfg invalid geometry
+
+    Code
+      sf_sfc(only_valid = TRUE)(data)
+    Output
+      [1] 1
+    Condition
+      Error in `f()`:
+      ! This geometries are not valid.
+
