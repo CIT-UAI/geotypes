@@ -120,7 +120,8 @@ sf_sfc <- typed::as_assertion_factory(function(
 #' @param df_opts SF object is a dataframe too,
 #' this is a list where they will be parsed to the Data.frame type
 #' @param active_column Name of the active column
-#' @param active_types Possible types for the active column
+#' @param active_opts List with possible params of sf_sfc to apply
+#' to the active column
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sf
 #' @export
@@ -128,7 +129,7 @@ sf_sf <- typed::as_assertion_factory(function(
     value,
     df_opts = list(),
     active_column = NULL,
-    active_types = NULL) {
+    active_opts = list()) {
   if (!inherits(value, "sf")) {
     e <- sprintf(
       "%s\n%s",
@@ -179,13 +180,13 @@ sf_sf <- typed::as_assertion_factory(function(
     #always exists, and if both exists they are the same
     df_opts$columns <- local({
       opts <- list()
-      opts[[current_active_column]] <- sf_sfc(types = active_types)
+      opts[[current_active_column]] <- do.call("sf_sfc", active_opts)
       opts
     })
   } else {
     if (FALSE %in% (current_active_column %in% names(df_opts$columns))) {
       #If the active column is not defined, we need to add it
-      df_opts$columns[[current_active_column]] <- sf_sfc(types = active_types)
+      df_opts$columns[[current_active_column]] <- do.call("sf_sfc", active_opts)
     }
   }
 
@@ -193,8 +194,8 @@ sf_sf <- typed::as_assertion_factory(function(
     do.call("Data.frame", df_opts)(value)
   })
 
-  if (!is.null(active_types)) {
-    sf_sfc(types = active_types)(sf::st_geometry(value))
+  if (!is.null(active_opts) && (length(active_opts) > 0)) {
+    do.call("sf_sfc", active_opts)(sf::st_geometry(value))
   }
 
   value

@@ -4,7 +4,7 @@
 \alias{sf_sf}
 \title{SF: SF Object}
 \usage{
-sf_sf(df_opts = list(), active_column = NULL, active_types = NULL, ...)
+sf_sf(df_opts = list(), active_column = NULL, active_opts = list(), ...)
 }
 \arguments{
 \item{df_opts}{SF object is a dataframe too,
@@ -12,7 +12,8 @@ this is a list where they will be parsed to the Data.frame type}
 
 \item{active_column}{Name of the active column}
 
-\item{active_types}{Possible types for the active column}
+\item{active_opts}{List with possible params of sf_sfc to apply
+to the active column}
 
 \item{...}{Parsed to assertion_factory}
 }

@@ -251,51 +251,57 @@ test_that("SF sf active_column Bad", {
   })
 })
 
-test_that("SF sf active_types Right", {
+test_that("SF sf active_opts Right", {
   expect_equal(
-    sf_sf(active_types = "MULTIPOLYGON")(sf_example),
+    sf_sf(active_opts = list("types" = "MULTIPOLYGON"))(sf_example),
     sf_example
   )
 })
 
-test_that("SF sf active_types Bad", {
+test_that("SF sf active_opts Bad", {
   expect_snapshot(error = TRUE, {
-    sf_sf(active_types = "POLYGON")(sf_example)
+    sf_sf(active_opts = list("types" = "POLYGON"))(sf_example)
   })
 })
 
-test_that("SF sf active_types multi Right", {
+test_that("SF sf active_opts multi Right", {
   expect_equal(
     sf_sf(
-      active_types = c(
-        "MULTIPOLYGON",
-        "POLYGON",
-        "POINT"
+      active_opts = list(
+        "types" = c(
+          "MULTIPOLYGON",
+          "POLYGON",
+          "POINT"
+        )
       )
     )(sf_example_multi),
     sf_example_multi
   )
 })
 
-test_that("SF sf active_types multi Bad", {
+test_that("SF sf active_opts multi Bad", {
   expect_snapshot(error = TRUE, {
     sf_sf(
-      active_types = c(
-        "MULTIPOLYGON",
-        "POLYGON"
+      active_opts = list(
+        "types" = c(
+          "MULTIPOLYGON",
+          "POLYGON"
+        )
       )
     )(sf_example_multi)
   })
 })
 
-test_that("SF sf active_types multi extra Right", {
+test_that("SF sf active_opts multi extra Right", {
   expect_equal(
     sf_sf(
-      active_types = c(
-        "MULTIPOLYGON",
-        "POLYGON",
-        "POINT",
-        "LINESTRING"
+      active_opts = list(
+        "types" = c(
+          "MULTIPOLYGON",
+          "POLYGON",
+          "POINT",
+          "LINESTRING"
+        )
       )
     )(sf_example_multi),
     sf_example_multi

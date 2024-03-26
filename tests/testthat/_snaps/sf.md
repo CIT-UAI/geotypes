@@ -118,20 +118,21 @@
       `attr(value, "sf_column")`: "geometry"
       `expected`:                 "geom"    
 
-# SF sf active_types Bad
+# SF sf active_opts Bad
 
     Code
-      sf_sf(active_types = "POLYGON")(sf_example)
+      sf_sf(active_opts = list(types = "POLYGON"))(sf_example)
     Condition
       Error:
       ! column geometry, Wrong geometry type
       `sf::st_geometry_type(value[[1]])`: "MULTIPOLYGON"
       `expected`:                         "POLYGON"     
 
-# SF sf active_types multi Bad
+# SF sf active_opts multi Bad
 
     Code
-      sf_sf(active_types = c("MULTIPOLYGON", "POLYGON"))(sf_example_multi)
+      sf_sf(active_opts = list(types = c("MULTIPOLYGON", "POLYGON")))(
+        sf_example_multi)
     Condition
       Error:
       ! column geometry, Wrong geometry type
