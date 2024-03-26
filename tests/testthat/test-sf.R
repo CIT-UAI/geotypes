@@ -1,3 +1,60 @@
+test_that("sf sfg valid geometry", {
+  point <- sf::st_point(c(0, 1))
+  expect_equal(sf_sfg(only_valid = TRUE)(point), point)
+})
+
+test_that("sf sfg valid geometry is not important", {
+  point <- sf::st_point(c(0, 1))
+  expect_equal(sf_sfg(only_valid = FALSE)(point), point)
+})
+
+test_that("sf sfg valid geometry is not important by default", {
+  point <- sf::st_point(c(0, 1))
+  expect_equal(sf_sfg()(point), point)
+})
+
+test_that("sf sfg invalid geometry", {
+  polygon <- sf::st_polygon(sf::st_sfc(c(
+    sf::st_point(c(0, 0)),
+    sf::st_point(c(0, 10)),
+    sf::st_point(c(10, 0)),
+    sf::st_point(c(10, 10)),
+    sf::st_point(c(0, 0))
+  )))
+  expect_error(
+    sf_sfg(only_valid = TRUE)(polygon),
+    "The geometry is not valid."
+  )
+})
+
+test_that("sf sfg invalid geometry is not important", {
+  polygon <- sf::st_polygon(sf::st_sfc(c(
+    sf::st_point(c(0, 0)),
+    sf::st_point(c(0, 10)),
+    sf::st_point(c(10, 0)),
+    sf::st_point(c(10, 10)),
+    sf::st_point(c(0, 0))
+  )))
+  expect_equal(
+    sf_sfg(only_valid = FALSE)(polygon),
+    polygon
+  )
+})
+
+test_that("sf sfg invalid geometry is not important by default", {
+  polygon <- sf::st_polygon(sf::st_sfc(c(
+    sf::st_point(c(0, 0)),
+    sf::st_point(c(0, 10)),
+    sf::st_point(c(10, 0)),
+    sf::st_point(c(10, 10)),
+    sf::st_point(c(0, 0))
+  )))
+  expect_equal(
+    sf_sfg()(polygon),
+    polygon
+  )
+})
+
 test_that("SF sfg Right", {
   line <- sf::st_linestring()
   point <- sf::st_point()
