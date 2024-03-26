@@ -7,7 +7,8 @@
 sf_sf(df_opts = list(), active_column = NULL, active_types = NULL, ...)
 }
 \arguments{
-\item{df_opts}{SF object is a dataframe too, this is a list where they will be parsed to the Data.frame type}
+\item{df_opts}{SF object is a dataframe too,
+this is a list where they will be parsed to the Data.frame type}
 
 \item{active_column}{Name of the active column}
 

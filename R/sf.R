@@ -5,12 +5,14 @@
 #' @description typed for geometry types from SF
 #'
 #' @param types Vector with possible acceptable geometry types
+#' @param only_valid TRUE to only accept a valid geometry
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sfg
 #' @export
 sf_sfg <- typed::as_assertion_factory(function(
     value,
-    types = NULL) {
+    types = NULL,
+    only_valid = NULL) {
   if (!inherits(value, "sfg")) {
     e <- sprintf(
       "%s\n%s",
@@ -43,6 +45,12 @@ sf_sfg <- typed::as_assertion_factory(function(
     }
   }
 
+  if (!is.null(only_valid) && only_valid) {
+    if (!sf::st_is_valid(value)) {
+      stop("The geometry is not valid.")
+    }
+  }
+
   value
 })
 
@@ -51,12 +59,14 @@ sf_sfg <- typed::as_assertion_factory(function(
 #' @description typed for geometry column types from SF
 #'
 #' @param types Vector with possible acceptable geometry types
+#' @param only_valid TRUE to accept sfc only with valid geometries
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sfg
 #' @export
 sf_sfc <- typed::as_assertion_factory(function(
     value,
-    types = NULL) {
+    types = NULL,
+    only_valid = NULL) {
   if (!inherits(value, "sfc")) {
     e <- sprintf(
       "%s\n%s",
@@ -89,6 +99,14 @@ sf_sfc <- typed::as_assertion_factory(function(
         )
         stop(e, call. = FALSE)
       }
+    }
+  }
+
+  if (!is.null(only_valid) && only_valid) {
+    is_valid <- sf::st_is_valid(value)
+    if (!(TRUE %in% all(is_valid))) {
+      print(which(!(is_valid %in% TRUE)))
+      stop("This geometries are not valid.")
     }
   }
 
