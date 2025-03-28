@@ -13,6 +13,30 @@ test_that("sf sfg valid geometry is not important by default", {
   expect_equal(sf_sfg()(point), point)
 })
 
+test_that("sf sfg valid point dim", {
+  point <- sf::st_point(c(0, 1))
+  expect_equal(sf_sfg(point_dims = 2)(point), point)
+})
+
+test_that("sf sfg valid point dims", {
+  point <- sf::st_point(c(0, 1))
+  expect_equal(sf_sfg(point_dims = c(2, 1))(point), point)
+})
+
+test_that("sf sfg invalid point dim", {
+  point <- sf::st_point(c(0, 1))
+  expect_snapshot(error = TRUE, {
+    sf_sfg(point_dims = 1)(point)
+  })
+})
+
+test_that("sf sfg invalid point dims", {
+  point <- sf::st_point(c(0, 1))
+  expect_snapshot(error = TRUE, {
+    sf_sfg(point_dims = c(1, 4))(point)
+  })
+})
+
 test_that("sf sfg invalid geometry", {
   polygon <- sf::st_polygon(sf::st_sfc(c(
     sf::st_point(c(0, 0)),
@@ -147,9 +171,9 @@ test_that("SF sfc types Bad", {
 sf_example <- system.file("shape/nc.shp", package = "sf") %.>%
   sf::st_read(., quiet = TRUE)
 
-#This one have MULTIPOLYGONS, POLYGONS, POINTS
-#Use spsUtil just to hide a warning from sf
-sf_example_multi <-  spsUtil::quiet({
+# This one have MULTIPOLYGONS, POLYGONS, POINTS
+# Use spsUtil just to hide a warning from sf
+sf_example_multi <- spsUtil::quiet({
   sf_example %.>%
     sf::st_cast(., "POLYGON", warn = FALSE) %.>%
     rbind(., sf::st_centroid(.)) %.>%
@@ -229,7 +253,7 @@ test_that("SF sf df_opts Right", {
 
 test_that("SF sf df_opts Bad", {
   new_df_opts <- sf_df_opts
-  #This should be typed::Double force error
+  # This should be typed::Double force error
   new_df_opts$columns$AREA <- typed::Integer()
   expect_snapshot(error = TRUE, {
     sf_sf(
@@ -320,8 +344,8 @@ test_that("SF sf: select all columns and active column", {
         columns = list(
           a = typed::Double()
         ),
-        #Select all columns, notice the
-        #active column does no exists in columns param
+        # Select all columns, notice the
+        # active column does no exists in columns param
         select = "all_of"
       )
     )(sf_df),
@@ -361,7 +385,6 @@ test_that("sf sfg invalid geometry", {
   expect_snapshot(error = TRUE, {
     sf_sfc(only_valid = TRUE)(data)
   })
-
 })
 
 test_that("sf sfc invalid geometry is not important", {

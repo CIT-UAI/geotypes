@@ -6,13 +6,15 @@
 #'
 #' @param types Vector with possible acceptable geometry types
 #' @param only_valid TRUE to only accept a valid geometry
+#' @param point_dims A vector which declares how much dimensions are accepted
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sfg
 #' @export
 sf_sfg <- typed::as_assertion_factory(function(
     value,
     types = NULL,
-    only_valid = NULL) {
+    only_valid = NULL,
+    point_dims = NULL) {
   if (!inherits(value, "sfg")) {
     e <- sprintf(
       "%s\n%s",
@@ -48,6 +50,21 @@ sf_sfg <- typed::as_assertion_factory(function(
   if (!is.null(only_valid) && only_valid) {
     if (!sf::st_is_valid(value)) {
       stop("The geometry is not valid.")
+    }
+  }
+
+  if (!is.null(point_dims)) {
+    dims <- sf::st_sfc(value) %.>%
+      sf::st_cast(., "POINT") %.>%
+      sapply(., length) %.>%
+      unique(.)
+    if (!(TRUE %in% all(dims %in% point_dims))) {
+      stop(paste0(
+        "The geometry can only have points of dimensions of ",
+        paste(point_dims, collapse = ","),
+        "\nThe input has ",
+        paste(dims, collapse = ",")
+      ))
     }
   }
 
@@ -175,9 +192,9 @@ sf_sf <- typed::as_assertion_factory(function(
   }
 
   if (FALSE %in% ("columns" %in% names(df_opts))) {
-    #If there is no df_opts, we need to include the active column
-    #active_column can exist or not, but current_active_column
-    #always exists, and if both exists they are the same
+    # If there is no df_opts, we need to include the active column
+    # active_column can exist or not, but current_active_column
+    # always exists, and if both exists they are the same
     df_opts$columns <- local({
       opts <- list()
       opts[[current_active_column]] <- do.call("sf_sfc", active_opts)
@@ -185,7 +202,7 @@ sf_sf <- typed::as_assertion_factory(function(
     })
   } else {
     if (FALSE %in% (current_active_column %in% names(df_opts$columns))) {
-      #If the active column is not defined, we need to add it
+      # If the active column is not defined, we need to add it
       df_opts$columns[[current_active_column]] <- do.call("sf_sfc", active_opts)
     }
   }
