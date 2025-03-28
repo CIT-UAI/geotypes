@@ -174,9 +174,13 @@ Possible values for select:
 geotypes::sf_sfg(
  #The geometry can only be this geometry types
  #If empty can be any geometry
- types = c("LINESTRING", "POLYGON")
+ types = c("LINESTRING", "POLYGON"),
  #Bool, if want the geometry only be acceptable if is valid
- only_valid = FALSE
+ only_valid = FALSE,
+ #All goemetries are conformed by points, this will only allow
+ #points of this specific dimensions, this will allow of 3 and 0
+ #dimensions
+ point_dims = c(0, 3)
 )
 ```
 
