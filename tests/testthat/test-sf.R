@@ -585,3 +585,59 @@ test_that("sf sfg invalid geometry is not important by default", {
     data
   )
 })
+
+test_that("sf sf valid column_sfc_opts", {
+  sdf <- sf::st_sf(
+    a = c(),
+    geom = sf::st_sfc()
+  )
+  expect_equal(
+    sf_sf(column_sfc_opts = list(
+      geom = list()
+    ))(sdf),
+    sdf
+  )
+})
+
+test_that("sf sf valid column_sfc_opts one property", {
+  sdf <- sf::st_sf(
+    a = 1,
+    geom = sf::st_sfc(sf::st_point())
+  )
+  expect_equal(
+    sf_sf(column_sfc_opts = list(
+      geom = list(
+        types = "POINT"
+      )
+    ))(sdf),
+    sdf
+  )
+})
+
+test_that("sf sf invalid column_sfc_opts one property", {
+  sdf <- sf::st_sf(
+    a = 1,
+    geom = sf::st_sfc(sf::st_linestring())
+  )
+  expect_snapshot(
+    error = TRUE,
+    sf_sf(column_sfc_opts = list(
+      geom = list(
+        types = "POINT"
+      )
+    ))(sdf)
+  )
+})
+
+test_that("sf sf invalid column_sfc_opts", {
+  sdf <- sf::st_sf(
+    a = c(),
+    geom = sf::st_sfc()
+  )
+  expect_snapshot(
+    error = TRUE,
+    sf_sf(column_sfc_opts = list(
+      geom2 = list()
+    ))(sdf)
+  )
+})

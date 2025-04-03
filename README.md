@@ -225,6 +225,12 @@ geotypes::sf_sf(
  active_opts = list(
   "types" = c("MULTILINESTRING", "MULTIPOLYGON"),
   "only_valid" = TRUE
+ ),
+ #In this option, you can set sfc properties per column
+ column_sfc_opts = list(
+    column_name = list(
+      "types" = c("MULTILINESTRING", "MULTIPOLYGON"),
+    )
  )
 )
 ```

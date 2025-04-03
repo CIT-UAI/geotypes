@@ -163,6 +163,9 @@ sf_sfc <- typed::as_assertion_factory(function(
 #' @param active_column Name of the active column
 #' @param active_opts List with possible params of sf_sfc to apply
 #' to the active column
+#' @param column_sfc_opts A list which the next propoerties:
+#' name: Column name where the options will be applied
+#' value: This values will be parsed to sf_sfc
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sf
 #' @export
@@ -170,7 +173,8 @@ sf_sf <- typed::as_assertion_factory(function(
     value,
     df_opts = list(),
     active_column = NULL,
-    active_opts = list()) {
+    active_opts = list(),
+    column_sfc_opts = NULL) {
   if (!inherits(value, "sf")) {
     e <- sprintf(
       "%s\n%s",
@@ -237,6 +241,15 @@ sf_sf <- typed::as_assertion_factory(function(
 
   if (!is.null(active_opts) && (length(active_opts) > 0)) {
     do.call("sf_sfc", active_opts)(sf::st_geometry(value))
+  }
+
+  if (!is.null(column_sfc_opts) && (length(column_sfc_opts) > 0)) {
+    for (col in names(column_sfc_opts)) {
+      if (!(TRUE %in% (col %in% names(value)))) {
+        stop(paste0("Column ", col, " does not exists."))
+      }
+      do.call("sf_sfc", column_sfc_opts[[col]])(value[[col]])
+    }
   }
 
   value

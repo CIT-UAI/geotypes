@@ -149,3 +149,21 @@
       Error in `f()`:
       ! This geometries are not valid.
 
+# sf sf invalid column_sfc_opts one property
+
+    Code
+      sf_sf(column_sfc_opts = list(geom = list(types = "POINT")))(sdf)
+    Condition
+      Error:
+      ! Wrong geometry type
+      `sf::st_geometry_type(value[[1]])`: "LINESTRING"
+      `expected`:                         "POINT"     
+
+# sf sf invalid column_sfc_opts
+
+    Code
+      sf_sf(column_sfc_opts = list(geom2 = list()))(sdf)
+    Condition
+      Error in `f()`:
+      ! Column geom2 does not exists.
+
