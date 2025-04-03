@@ -704,3 +704,25 @@ test_that(
     )
   }
 )
+
+test_that("sf sf_sfc valid uniform_dim", {
+  val <- sf::st_sfc(
+    sf::st_point(c(0, 0)),
+    sf::st_point(c(0, 0))
+  )
+  expect_equal(
+    sf_sfc(uniform_dim = TRUE)(val),
+    val
+  )
+})
+
+test_that("sf sf_sfc invalid uniform_dim", {
+  val <- sf::st_sfc(
+    sf::st_point(c(0, 0)),
+    sf::st_point(c(0, 0, 0))
+  )
+  expect_snapshot(
+    error = TRUE,
+    sf_sfc(uniform_dim = TRUE)(val)
+  )
+})

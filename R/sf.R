@@ -78,6 +78,7 @@ sf_sfg <- typed::as_assertion_factory(function(
 #' @param types Vector with possible acceptable geometry types
 #' @param only_valid TRUE to accept sfc only with valid geometries
 #' @param point_dims A vector which declares how much dimensions are accepted
+#' @param uniform_dim The sfc can only have geometries of the same dimension
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sfg
 #' @export
@@ -85,7 +86,8 @@ sf_sfc <- typed::as_assertion_factory(function(
     value,
     types = NULL,
     only_valid = NULL,
-    point_dims = NULL) {
+    point_dims = NULL,
+    uniform_dim = NULL) {
   if (!inherits(value, "sfc")) {
     e <- sprintf(
       "%s\n%s",
@@ -129,7 +131,7 @@ sf_sfc <- typed::as_assertion_factory(function(
     }
   }
 
-  if (!is.null(point_dims)) {
+  if (!is.null(point_dims) || !is.null(uniform_dim)) {
     dims <- value %.>%
       sapply(
         .,
@@ -141,11 +143,20 @@ sf_sfc <- typed::as_assertion_factory(function(
       ) %.>%
       unlist(.) %.>%
       unique(.)
-    if (!(TRUE %in% all(dims %in% point_dims))) {
+    if (!is.null(point_dims)) {
+      if (!(TRUE %in% all(dims %in% point_dims))) {
+        stop(paste0(
+          "The geometries can only have points of dimensions of ",
+          paste(point_dims, collapse = ","),
+          "\nThere is geometries with ",
+          paste(dims, collapse = ",")
+        ))
+      }
+    }
+    if (!is.null(uniform_dim) && uniform_dim && (length(dims) > 1)) {
       stop(paste0(
-        "The geometries can only have points of dimensions of ",
-        paste(point_dims, collapse = ","),
-        "\nThere is geometries with ",
+        "The geometry column can only have one dimesion,",
+        " it have a mix of: ",
         paste(dims, collapse = ",")
       ))
     }
