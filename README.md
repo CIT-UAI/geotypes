@@ -229,8 +229,13 @@ geotypes::sf_sf(
  #In this option, you can set sfc properties per column
  column_sfc_opts = list(
     column_name = list(
-      "types" = c("MULTILINESTRING", "MULTIPOLYGON"),
+      "types" = c("MULTILINESTRING", "MULTIPOLYGON")
     )
+ ),
+ #All columns that are not specified on column_sfc_opts
+ #will use this options to validate
+ default_sfc_opts = list(
+  "types" = c("MULTILINESTRING", "MULTIPOLYGON")
  )
 )
 ```

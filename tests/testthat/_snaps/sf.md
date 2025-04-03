@@ -167,3 +167,25 @@
       Error in `f()`:
       ! Column geom2 does not exists.
 
+# sf sf invalid default_sfc_opts one property
+
+    Code
+      sf_sf(column_sfc_opts = list(geom = list(types = "LINESTRING")),
+      default_sfc_opts = list(types = "LINESTRING"))(sdf)
+    Condition
+      Error:
+      ! Wrong geometry type
+      `sf::st_geometry_type(value[[1]])`: "POINT"     
+      `expected`:                         "LINESTRING"
+
+# sf sf invalid column_sfc_opts and valid default_sfc_opts one property
+
+    Code
+      sf_sf(column_sfc_opts = list(geom2 = list(types = "LINESTRING")),
+      default_sfc_opts = list(types = "POINT"))(sdf)
+    Condition
+      Error:
+      ! Wrong geometry type
+      `sf::st_geometry_type(value[[1]])`: "POINT"     
+      `expected`:                         "LINESTRING"
+

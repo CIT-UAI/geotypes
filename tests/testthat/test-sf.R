@@ -641,3 +641,66 @@ test_that("sf sf invalid column_sfc_opts", {
     ))(sdf)
   )
 })
+
+test_that("sf sf invalid default_sfc_opts one property", {
+  sdf <- sf::st_sf(
+    a = 1,
+    geom = sf::st_sfc(sf::st_linestring()),
+    geom2 = sf::st_sfc(sf::st_point())
+  )
+  expect_snapshot(
+    error = TRUE,
+    sf_sf(
+      column_sfc_opts = list(
+        geom = list(
+          types = "LINESTRING"
+        )
+      ),
+      default_sfc_opts = list(
+        types = "LINESTRING"
+      )
+    )(sdf)
+  )
+})
+
+test_that(
+  "sf sf invalid column_sfc_opts and valid default_sfc_opts one property",
+  {
+    sdf <- sf::st_sf(
+      a = 1,
+      geom = sf::st_sfc(sf::st_linestring()),
+      geom2 = sf::st_sfc(sf::st_point())
+    )
+    expect_snapshot(
+      error = TRUE,
+      sf_sf(
+        column_sfc_opts = list(
+          geom2 = list(
+            types = "LINESTRING"
+          )
+        ),
+        default_sfc_opts = list(
+          types = "POINT"
+        )
+      )(sdf)
+    )
+  }
+)
+
+test_that(
+  "sf sf valid default_sfc_opts one property",
+  {
+    sdf <- sf::st_sf(
+      a = 1,
+      geom = sf::st_sfc(sf::st_point())
+    )
+    expect_equal(
+      sf_sf(
+        default_sfc_opts = list(
+          types = "POINT"
+        )
+      )(sdf),
+      sdf
+    )
+  }
+)

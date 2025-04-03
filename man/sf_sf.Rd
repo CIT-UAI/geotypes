@@ -9,6 +9,7 @@ sf_sf(
   active_column = NULL,
   active_opts = list(),
   column_sfc_opts = NULL,
+  default_sfc_opts = NULL,
   ...
 )
 }
@@ -24,6 +25,9 @@ to the active column}
 \item{column_sfc_opts}{A list which the next propoerties:
 name: Column name where the options will be applied
 value: This values will be parsed to sf_sfc}
+
+\item{default_sfc_opts}{All columns that are not specified on
+column_sfc_opts will have this one as sfc options}
 
 \item{...}{Parsed to assertion_factory}
 }

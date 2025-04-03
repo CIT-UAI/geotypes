@@ -166,6 +166,8 @@ sf_sfc <- typed::as_assertion_factory(function(
 #' @param column_sfc_opts A list which the next propoerties:
 #' name: Column name where the options will be applied
 #' value: This values will be parsed to sf_sfc
+#' @param default_sfc_opts All columns that are not specified on
+#' column_sfc_opts will have this one as sfc options
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sf
 #' @export
@@ -174,7 +176,8 @@ sf_sf <- typed::as_assertion_factory(function(
     df_opts = list(),
     active_column = NULL,
     active_opts = list(),
-    column_sfc_opts = NULL) {
+    column_sfc_opts = NULL,
+    default_sfc_opts = NULL) {
   if (!inherits(value, "sf")) {
     e <- sprintf(
       "%s\n%s",
@@ -249,6 +252,21 @@ sf_sf <- typed::as_assertion_factory(function(
         stop(paste0("Column ", col, " does not exists."))
       }
       do.call("sf_sfc", column_sfc_opts[[col]])(value[[col]])
+    }
+  }
+
+  if (!is.null(default_sfc_opts)) {
+    sfc_cols <- local({
+      cols <- c()
+      for (col in names(value)) {
+        if (inherits(value[[col]], "sfc")) {
+          cols <- append(cols, col)
+        }
+      }
+      cols
+    })
+    for (col in setdiff(sfc_cols, names(column_sfc_opts))) {
+      do.call("sf_sfc", default_sfc_opts)(value[[col]])
     }
   }
 
