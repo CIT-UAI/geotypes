@@ -586,7 +586,7 @@ test_that("sf sfg invalid geometry is not important by default", {
   )
 })
 
-test_that("sf sf valid column_sfc_opts", {
+test_that("sf sf_sf valid column_sfc_opts", {
   sdf <- sf::st_sf(
     a = c(),
     geom = sf::st_sfc()
@@ -599,7 +599,7 @@ test_that("sf sf valid column_sfc_opts", {
   )
 })
 
-test_that("sf sf valid column_sfc_opts one property", {
+test_that("sf sf_sf valid column_sfc_opts one property", {
   sdf <- sf::st_sf(
     a = 1,
     geom = sf::st_sfc(sf::st_point())
@@ -614,7 +614,7 @@ test_that("sf sf valid column_sfc_opts one property", {
   )
 })
 
-test_that("sf sf invalid column_sfc_opts one property", {
+test_that("sf sf_sf invalid column_sfc_opts one property", {
   sdf <- sf::st_sf(
     a = 1,
     geom = sf::st_sfc(sf::st_linestring())
@@ -629,7 +629,7 @@ test_that("sf sf invalid column_sfc_opts one property", {
   )
 })
 
-test_that("sf sf invalid column_sfc_opts", {
+test_that("sf sf_sf invalid column_sfc_opts", {
   sdf <- sf::st_sf(
     a = c(),
     geom = sf::st_sfc()
@@ -642,7 +642,7 @@ test_that("sf sf invalid column_sfc_opts", {
   )
 })
 
-test_that("sf sf invalid default_sfc_opts one property", {
+test_that("sf sf_sf invalid default_sfc_opts one property", {
   sdf <- sf::st_sf(
     a = 1,
     geom = sf::st_sfc(sf::st_linestring()),
@@ -664,7 +664,7 @@ test_that("sf sf invalid default_sfc_opts one property", {
 })
 
 test_that(
-  "sf sf invalid column_sfc_opts and valid default_sfc_opts one property",
+  "sf sf_sf invalid column_sfc_opts and valid default_sfc_opts one property",
   {
     sdf <- sf::st_sf(
       a = 1,
@@ -688,7 +688,7 @@ test_that(
 )
 
 test_that(
-  "sf sf valid default_sfc_opts one property",
+  "sf sf_sf valid default_sfc_opts one property",
   {
     sdf <- sf::st_sf(
       a = 1,
