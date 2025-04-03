@@ -1,21 +1,3 @@
-# sf sfg invalid point dim
-
-    Code
-      sf_sfg(point_dims = 1)(point)
-    Condition
-      Error in `f()`:
-      ! The geometry can only have points of dimensions of 1
-      The input has 2
-
-# sf sfg invalid point dims
-
-    Code
-      sf_sfg(point_dims = c(1, 4))(point)
-    Condition
-      Error in `f()`:
-      ! The geometry can only have points of dimensions of 1,4
-      The input has 2
-
 # SF sfg Number Bad
 
     Code

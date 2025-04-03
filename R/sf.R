@@ -77,13 +77,15 @@ sf_sfg <- typed::as_assertion_factory(function(
 #'
 #' @param types Vector with possible acceptable geometry types
 #' @param only_valid TRUE to accept sfc only with valid geometries
+#' @param point_dims A vector which declares how much dimensions are accepted
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sfg
 #' @export
 sf_sfc <- typed::as_assertion_factory(function(
     value,
     types = NULL,
-    only_valid = NULL) {
+    only_valid = NULL,
+    point_dims = NULL) {
   if (!inherits(value, "sfc")) {
     e <- sprintf(
       "%s\n%s",
@@ -124,6 +126,28 @@ sf_sfc <- typed::as_assertion_factory(function(
     if (!(TRUE %in% all(is_valid))) {
       print(which(!(is_valid %in% TRUE)))
       stop("This geometries are not valid.")
+    }
+  }
+
+  if (!is.null(point_dims)) {
+    dims <- value %.>%
+      sapply(
+        .,
+        function(x) {
+          sf::st_sfc(x) %.>%
+            sf::st_cast(., "POINT") %.>%
+            sapply(., length)
+        }
+      ) %.>%
+      unlist(.) %.>%
+      unique(.)
+    if (!(TRUE %in% all(dims %in% point_dims))) {
+      stop(paste0(
+        "The geometries can only have points of dimensions of ",
+        paste(point_dims, collapse = ","),
+        "\nThere is geometries with ",
+        paste(dims, collapse = ",")
+      ))
     }
   }
 

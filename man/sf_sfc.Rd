@@ -4,12 +4,14 @@
 \alias{sf_sfc}
 \title{SF: Geometry Column Type}
 \usage{
-sf_sfc(types = NULL, only_valid = NULL, ...)
+sf_sfc(types = NULL, only_valid = NULL, point_dims = NULL, ...)
 }
 \arguments{
 \item{types}{Vector with possible acceptable geometry types}
 
 \item{only_valid}{TRUE to accept sfc only with valid geometries}
+
+\item{point_dims}{A vector which declares how much dimensions are accepted}
 
 \item{...}{Parsed to assertion_factory}
 }
