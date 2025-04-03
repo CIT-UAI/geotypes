@@ -57,7 +57,8 @@ sf_sfg <- typed::as_assertion_factory(function(
     dims <- sf::st_sfc(value) %.>%
       sf::st_cast(., "POINT") %.>%
       sapply(., length) %.>%
-      unique(.)
+      unique(.) %.>%
+      sort(.)
     if (!(TRUE %in% all(dims %in% point_dims))) {
       stop(paste0(
         "The geometry can only have points of dimensions of ",
@@ -70,6 +71,27 @@ sf_sfg <- typed::as_assertion_factory(function(
 
   value
 })
+
+#' @title Return dimensions of sfc
+#' @name get_sfc_dims
+#' @description Get the dimensions of the geometries in sfc
+#' @param value SFC object
+#' @return Vector with contained dimensions
+#' @export
+get_sfc_dims <- function(value) {
+  value %.>%
+    sapply(
+      .,
+      function(x) {
+        sf::st_sfc(x) %.>%
+          sf::st_cast(., "POINT") %.>%
+          sapply(., length)
+      }
+    ) %.>%
+    unlist(.) %.>%
+    unique(.) %.>%
+    sort(.)
+}
 
 #' @title SF: Geometry Column Type
 #' @name sf_sfc
@@ -132,17 +154,7 @@ sf_sfc <- typed::as_assertion_factory(function(
   }
 
   if (!is.null(point_dims) || !is.null(uniform_dim)) {
-    dims <- value %.>%
-      sapply(
-        .,
-        function(x) {
-          sf::st_sfc(x) %.>%
-            sf::st_cast(., "POINT") %.>%
-            sapply(., length)
-        }
-      ) %.>%
-      unlist(.) %.>%
-      unique(.)
+    dims <- get_sfc_dims(value)
     if (!is.null(point_dims)) {
       if (!(TRUE %in% all(dims %in% point_dims))) {
         stop(paste0(

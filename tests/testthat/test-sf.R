@@ -726,3 +726,13 @@ test_that("sf sf_sfc invalid uniform_dim", {
     sf_sfc(uniform_dim = TRUE)(val)
   )
 })
+
+test_that("get_sfc_dims", {
+  values <- gen_test_sfc_dims()
+  for (dim in 2:4) {
+    expect_equal(
+      get_sfc_dims(values[[dim]]),
+      dim
+    )
+  }
+})

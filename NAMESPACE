@@ -2,6 +2,8 @@
 
 export(Data.frame)
 export(List)
+export(get_sfc_dims)
+export(get_sfnetwork_dims)
 export(sf_sf)
 export(sf_sfc)
 export(sf_sfg)

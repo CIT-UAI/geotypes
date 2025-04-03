@@ -199,7 +199,9 @@ geotypes::sf_sfc(
  #All goemetries are conformed by points, this will only allow
  #points of this specific dimensions, this will allow of 3 and 0
  #dimensions, this works on the interal points of each sfg
- point_dims = c(0, 3)
+ point_dims = c(0, 3),
+ #If want to all the geometries have the same dimension
+ uniform_dim = TRUE
 )
 ```
 
@@ -254,3 +256,20 @@ You can have multiple geometry columns, and specify what each of them is.
 geotypes::sfnetworks_sfnetwork(null_ok = FALSE)
 ```
 
+## Helper functions
+
+### get_sfnetwork_dims
+
+Return all the contined dimensions on the network
+
+```R
+geotypes::get_sfnetwork_dims(network)
+```
+
+### get_sfc_dims
+
+Return all the contined dimensions on the sfc
+
+```R
+geotypes::get_sfc_dims(network)
+```
