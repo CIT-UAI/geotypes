@@ -4,10 +4,19 @@
 \alias{sfnetworks_sfnetwork}
 \title{SFnetwork type from sfnetworks}
 \usage{
-sfnetworks_sfnetwork(null_ok = FALSE, ...)
+sfnetworks_sfnetwork(
+  null_ok = FALSE,
+  nodes_sfc_opts = NULL,
+  edges_sfc_opts = NULL,
+  ...
+)
 }
 \arguments{
 \item{null_ok}{If NULL is acceptable}
+
+\item{nodes_sfc_opts}{Will use sf_sfc on goemetry column of nodes}
+
+\item{edges_sfc_opts}{Will use sf_sfc on geometry column of edges}
 
 \item{...}{Parsed to assertion_factory}
 }

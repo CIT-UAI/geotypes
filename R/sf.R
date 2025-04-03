@@ -6,13 +6,15 @@
 #'
 #' @param types Vector with possible acceptable geometry types
 #' @param only_valid TRUE to only accept a valid geometry
+#' @param point_dims A vector which declares how much dimensions are accepted
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sfg
 #' @export
 sf_sfg <- typed::as_assertion_factory(function(
     value,
     types = NULL,
-    only_valid = NULL) {
+    only_valid = NULL,
+    point_dims = NULL) {
   if (!inherits(value, "sfg")) {
     e <- sprintf(
       "%s\n%s",
@@ -51,8 +53,45 @@ sf_sfg <- typed::as_assertion_factory(function(
     }
   }
 
+  if (!is.null(point_dims)) {
+    dims <- sf::st_sfc(value) %.>%
+      sf::st_cast(., "POINT") %.>%
+      sapply(., length) %.>%
+      unique(.) %.>%
+      sort(.)
+    if (!(TRUE %in% all(dims %in% point_dims))) {
+      stop(paste0(
+        "The geometry can only have points of dimensions of ",
+        paste(point_dims, collapse = ","),
+        "\nThe input has ",
+        paste(dims, collapse = ",")
+      ))
+    }
+  }
+
   value
 })
+
+#' @title Return dimensions of sfc
+#' @name get_sfc_dims
+#' @description Get the dimensions of the geometries in sfc
+#' @param value SFC object
+#' @return Vector with contained dimensions
+#' @export
+get_sfc_dims <- function(value) {
+  value %.>%
+    sapply(
+      .,
+      function(x) {
+        sf::st_sfc(x) %.>%
+          sf::st_cast(., "POINT") %.>%
+          sapply(., length)
+      }
+    ) %.>%
+    unlist(.) %.>%
+    unique(.) %.>%
+    sort(.)
+}
 
 #' @title SF: Geometry Column Type
 #' @name sf_sfc
@@ -60,13 +99,17 @@ sf_sfg <- typed::as_assertion_factory(function(
 #'
 #' @param types Vector with possible acceptable geometry types
 #' @param only_valid TRUE to accept sfc only with valid geometries
+#' @param point_dims A vector which declares how much dimensions are accepted
+#' @param uniform_dim The sfc can only have geometries of the same dimension
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sfg
 #' @export
 sf_sfc <- typed::as_assertion_factory(function(
     value,
     types = NULL,
-    only_valid = NULL) {
+    only_valid = NULL,
+    point_dims = NULL,
+    uniform_dim = NULL) {
   if (!inherits(value, "sfc")) {
     e <- sprintf(
       "%s\n%s",
@@ -110,6 +153,27 @@ sf_sfc <- typed::as_assertion_factory(function(
     }
   }
 
+  if (!is.null(point_dims) || !is.null(uniform_dim)) {
+    dims <- get_sfc_dims(value)
+    if (!is.null(point_dims)) {
+      if (!(TRUE %in% all(dims %in% point_dims))) {
+        stop(paste0(
+          "The geometries can only have points of dimensions of ",
+          paste(point_dims, collapse = ","),
+          "\nThere is geometries with ",
+          paste(dims, collapse = ",")
+        ))
+      }
+    }
+    if (!is.null(uniform_dim) && uniform_dim && (length(dims) > 1)) {
+      stop(paste0(
+        "The geometry column can only have one dimesion,",
+        " it have a mix of: ",
+        paste(dims, collapse = ",")
+      ))
+    }
+  }
+
   value
 })
 
@@ -122,6 +186,11 @@ sf_sfc <- typed::as_assertion_factory(function(
 #' @param active_column Name of the active column
 #' @param active_opts List with possible params of sf_sfc to apply
 #' to the active column
+#' @param column_sfc_opts A list which the next propoerties:
+#' name: Column name where the options will be applied
+#' value: This values will be parsed to sf_sfc
+#' @param default_sfc_opts All columns that are not specified on
+#' column_sfc_opts will have this one as sfc options
 #' @param ... Parsed to assertion_factory
 #' @return Assertion for sf
 #' @export
@@ -129,7 +198,9 @@ sf_sf <- typed::as_assertion_factory(function(
     value,
     df_opts = list(),
     active_column = NULL,
-    active_opts = list()) {
+    active_opts = list(),
+    column_sfc_opts = NULL,
+    default_sfc_opts = NULL) {
   if (!inherits(value, "sf")) {
     e <- sprintf(
       "%s\n%s",
@@ -175,9 +246,9 @@ sf_sf <- typed::as_assertion_factory(function(
   }
 
   if (FALSE %in% ("columns" %in% names(df_opts))) {
-    #If there is no df_opts, we need to include the active column
-    #active_column can exist or not, but current_active_column
-    #always exists, and if both exists they are the same
+    # If there is no df_opts, we need to include the active column
+    # active_column can exist or not, but current_active_column
+    # always exists, and if both exists they are the same
     df_opts$columns <- local({
       opts <- list()
       opts[[current_active_column]] <- do.call("sf_sfc", active_opts)
@@ -185,7 +256,7 @@ sf_sf <- typed::as_assertion_factory(function(
     })
   } else {
     if (FALSE %in% (current_active_column %in% names(df_opts$columns))) {
-      #If the active column is not defined, we need to add it
+      # If the active column is not defined, we need to add it
       df_opts$columns[[current_active_column]] <- do.call("sf_sfc", active_opts)
     }
   }
@@ -196,6 +267,30 @@ sf_sf <- typed::as_assertion_factory(function(
 
   if (!is.null(active_opts) && (length(active_opts) > 0)) {
     do.call("sf_sfc", active_opts)(sf::st_geometry(value))
+  }
+
+  if (!is.null(column_sfc_opts) && (length(column_sfc_opts) > 0)) {
+    for (col in names(column_sfc_opts)) {
+      if (!(TRUE %in% (col %in% names(value)))) {
+        stop(paste0("Column ", col, " does not exists."))
+      }
+      do.call("sf_sfc", column_sfc_opts[[col]])(value[[col]])
+    }
+  }
+
+  if (!is.null(default_sfc_opts)) {
+    sfc_cols <- local({
+      cols <- c()
+      for (col in names(value)) {
+        if (inherits(value[[col]], "sfc")) {
+          cols <- append(cols, col)
+        }
+      }
+      cols
+    })
+    for (col in setdiff(sfc_cols, names(column_sfc_opts))) {
+      do.call("sf_sfc", default_sfc_opts)(value[[col]])
+    }
   }
 
   value

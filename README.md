@@ -174,9 +174,13 @@ Possible values for select:
 geotypes::sf_sfg(
  #The geometry can only be this geometry types
  #If empty can be any geometry
- types = c("LINESTRING", "POLYGON")
+ types = c("LINESTRING", "POLYGON"),
  #Bool, if want the geometry only be acceptable if is valid
- only_valid = FALSE
+ only_valid = FALSE,
+ #All goemetries are conformed by points, this will only allow
+ #points of this specific dimensions, this will allow of 3 and 0
+ #dimensions, this works on the interal points of each sfg
+ point_dims = c(0, 3)
 )
 ```
 
@@ -192,6 +196,12 @@ geotypes::sf_sfc(
  #Bool, if want the geometries only be acceptable if
  #all of them are valid
  only_valid = FALSE
+ #All goemetries are conformed by points, this will only allow
+ #points of this specific dimensions, this will allow of 3 and 0
+ #dimensions, this works on the interal points of each sfg
+ point_dims = c(0, 3),
+ #If want to all the geometries have the same dimension
+ uniform_dim = TRUE
 )
 ```
 
@@ -217,6 +227,17 @@ geotypes::sf_sf(
  active_opts = list(
   "types" = c("MULTILINESTRING", "MULTIPOLYGON"),
   "only_valid" = TRUE
+ ),
+ #In this option, you can set sfc properties per column
+ column_sfc_opts = list(
+    column_name = list(
+      "types" = c("MULTILINESTRING", "MULTIPOLYGON")
+    )
+ ),
+ #All columns that are not specified on column_sfc_opts
+ #will use this options to validate
+ default_sfc_opts = list(
+  "types" = c("MULTILINESTRING", "MULTIPOLYGON")
  )
 )
 ```
@@ -235,3 +256,20 @@ You can have multiple geometry columns, and specify what each of them is.
 geotypes::sfnetworks_sfnetwork(null_ok = FALSE)
 ```
 
+## Helper functions
+
+### get_sfnetwork_dims
+
+Return all the contined dimensions on the network
+
+```R
+geotypes::get_sfnetwork_dims(network)
+```
+
+### get_sfc_dims
+
+Return all the contined dimensions on the sfc
+
+```R
+geotypes::get_sfc_dims(network)
+```
