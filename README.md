@@ -178,9 +178,9 @@ geotypes::sf_sfg(
  #Bool, if want the geometry only be acceptable if is valid
  only_valid = FALSE,
  #All goemetries are conformed by points, this will only allow
- #points of this specific dimensions, this will allow of 3 and 0
- #dimensions, this works on the interal points of each sfg
- point_dims = c(0, 3)
+ #points of this specific dimensions, can be
+ #"XY", "XYZ", "XYM", "XYZM"
+ point_dims = c("XY", "XYZ"),
 )
 ```
 
@@ -197,9 +197,9 @@ geotypes::sf_sfc(
  #all of them are valid
  only_valid = FALSE
  #All goemetries are conformed by points, this will only allow
- #points of this specific dimensions, this will allow of 3 and 0
- #dimensions, this works on the interal points of each sfg
- point_dims = c(0, 3),
+ #points of this specific dimensions, can be
+ #"XY", "XYZ", "XYM", "XYZM"
+ point_dims = c("XY", "XYZ"),
  #If want to all the geometries have the same dimension
  uniform_dim = TRUE
 )

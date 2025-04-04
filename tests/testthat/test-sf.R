@@ -1,50 +1,69 @@
 gen_test_sfg_dims <- function() {
   points <- list()
-  for (dim in 2:4) {
-    points[dim] <- sf::st_sfc(sf::st_point(rep(0, dim)))
-  }
+  points["XY"] <- sf::st_sfc(sf::st_point(c(0, 0)))
+  points["XYZ"] <- sf::st_sfc(sf::st_point(
+    c(0, 0, 0),
+    dim = "XYZ"
+  ))
+  points["XYM"] <- sf::st_sfc(sf::st_point(
+    c(0, 0, 0),
+    dim = "XYM"
+  ))
+  points["XYZM"] <- sf::st_sfc(sf::st_point(c(0, 0, 0, 0)))
+
   multipoints <- list()
   for (n in 1:3) {
-    for (dim in 2:4) {
-      multipoints[dim] <- sf::st_combine(
-        rep(sf::st_sfc(points[[dim]]), n)
+    for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
+      base <- sf::st_coordinates(points[[dim]])
+      value <- base
+      for (i in seq_len(n - 1)) {
+        value <- rbind(value, base)
+      }
+      multipoints[dim] <- sf::st_multipoint(
+        value,
+        dim = dim
       ) %.>%
         sf::st_sfc(.)
     }
   }
   lines <- list()
-  for (dim in 2:4) {
+  for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
     lines[dim] <- sf::st_sfc(
-      sf::st_linestring(c(
-        points[[dim]],
-        points[[dim]]
-      ))
+      sf::st_linestring(
+        c(
+          points[[dim]],
+          points[[dim]]
+        ),
+        dim = dim
+      )
     )
   }
   multilines <- list()
   for (n in 1:3) {
-    for (dim in 2:4) {
+    for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
       multilines[dim] <- sf::st_multilinestring(
-        rep(sf::st_sfc(lines[dim]), n)
+        rep(sf::st_sfc(lines[dim]), n),
+        dim = dim
       ) %.>%
         sf::st_sfc(.)
     }
   }
   polygons <- list()
-  for (dim in 2:4) {
-    polygons[dim] <- sf::st_sfc(sf::st_polygon(multilines[[dim]]))
+  for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
+    polygons[dim] <- sf::st_sfc(sf::st_polygon(multilines[[dim]], dim = dim))
   }
   multipolygons <- list()
   for (n in 1:3) {
-    for (dim in 2:4) {
+    for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
       multipolygons[dim] <- sf::st_multipolygon(
-        rep(sf::st_sfc(polygons[dim]), n)
+        rep(sf::st_sfc(polygons[dim]), n),
+        dim = dim
       ) %.>%
         sf::st_sfc(.)
     }
   }
-  pre_geoms <- data.frame(dim = integer(0L), geom = sf::st_sfc())
-  for (dim in 2:4) {
+  pre_geoms <- data.frame(dim = character(0L), geom = sf::st_sfc())
+  for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
     pre_geoms <- dplyr::bind_rows(
       pre_geoms,
       data.frame(
@@ -61,7 +80,7 @@ gen_test_sfg_dims <- function() {
     )
   }
   geometrycollections <- list()
-  for (dim in 2:4) {
+  for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
     pre_geoms_ <- dplyr::filter(pre_geoms, .data$dim == .env$dim)
     for (n in seq_len(nrow(pre_geoms_))) {
       for (re in 1:3) {
@@ -69,7 +88,8 @@ gen_test_sfg_dims <- function() {
         for (comb in row(combs)) {
           rn <- pre_geoms_[combs[comb, ], ]
           geometrycollections[[dim]] <- sf::st_geometrycollection(
-            rep(rn$geom, re)
+            rep(rn$geom, re),
+            dims = dim
           )
         }
       }
@@ -89,7 +109,7 @@ gen_test_sfg_dims <- function() {
 gen_test_sfc_dims <- function() {
   sfg_samples <- gen_test_sfg_dims()
   geoms <- list()
-  for (dim in 2:4) {
+  for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
     dim_geoms <- sf::st_sfc()
     for (name in names(sfg_samples)) {
       dim_geoms <- append(
@@ -120,7 +140,7 @@ test_that("sf sfg valid geometry is not important by default", {
 test_that("sf sfg valid point dim", {
   samples <- gen_test_sfg_dims()
   for (geom_type in names(samples)) {
-    for (dim in 2:4) {
+    for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
       geom <- samples[[geom_type]][[dim]]
       expect_equal(sf_sfg(point_dims = dim)(geom), geom)
     }
@@ -130,9 +150,12 @@ test_that("sf sfg valid point dim", {
 test_that("sf sfg valid point dims", {
   samples <- gen_test_sfg_dims()
   for (geom_type in names(samples)) {
-    for (dim in 2:4) {
+    for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
       geom <- samples[[geom_type]][[dim]]
-      expect_equal(sf_sfg(point_dims = 2:4)(geom), geom)
+      expect_equal(
+        sf_sfg(point_dims = c("XY", "XYZ", "XYM", "XYZM"))(geom),
+        geom
+      )
     }
   }
 })
@@ -140,14 +163,17 @@ test_that("sf sfg valid point dims", {
 test_that("sf sfg invalid point dim", {
   samples <- gen_test_sfg_dims()
   for (geom_type in names(samples)) {
-    for (invalid_dim in 2:4) {
+    for (invalid_dim in c("XY", "XYZ", "XYM", "XYZM")) {
       geom <- samples[[geom_type]][[invalid_dim]]
-      allowed_dims <- setdiff(2:4, invalid_dim)
+      allowed_dims <- setdiff(
+        c("XY", "XYZ", "XYM", "XYZM"),
+        invalid_dim
+      )
       err_msg <- paste0(
         "The geometry can only have points of dimensions of ",
-        paste(allowed_dims, collapse = ","),
+        paste(sort(allowed_dims), collapse = ","),
         "\nThe input has ",
-        paste(invalid_dim, collapse = ",")
+        paste(sort(invalid_dim), collapse = ",")
       )
       expect_error(
         {
@@ -294,7 +320,7 @@ test_that("SF sfc types Bad", {
 test_that("sf sfc valid point dim", {
   samples <- gen_test_sfc_dims()
   for (sel in 1:3) {
-    opts <- t(combn(2:4, sel))
+    opts <- t(combn(c("XY", "XYZ", "XYM", "XYZM"), sel))
     for (opt in seq_len(nrow(opts))) {
       val <- sf::st_sfc()
       allow_dims <- opts[opt, ]
@@ -312,19 +338,19 @@ test_that("sf sfc valid point dim", {
 test_that("sf sfc invalid point dim", {
   samples <- gen_test_sfc_dims()
   for (sel in 1:3) {
-    opts <- t(combn(2:4, sel))
+    opts <- t(combn(c("XY", "XYZ", "XYM", "XYZM"), sel))
     for (opt in seq_len(nrow(opts))) {
       val <- sf::st_sfc()
       deny_dims <- opts[opt, ]
-      allow_dims <- setdiff(2:4, deny_dims)
+      allow_dims <- setdiff(c("XY", "XYZ", "XYM", "XYZM"), deny_dims)
       for (n in deny_dims) {
         val <- append(val, samples[[n]])
       }
       msg <- paste0(
         "The geometries can only have points of dimensions of ",
-        paste(allow_dims, collapse = ","),
+        paste(sort(allow_dims), collapse = ","),
         "\nThere is geometries with ",
-        paste(deny_dims, collapse = ",")
+        paste(sort(deny_dims), collapse = ",")
       )
       expect_error(
         sf_sfc(point_dims = allow_dims)(val),
@@ -729,7 +755,7 @@ test_that("sf sf_sfc invalid uniform_dim", {
 
 test_that("get_sfc_dims", {
   values <- gen_test_sfc_dims()
-  for (dim in 2:4) {
+  for (dim in c("XY", "XYZ", "XYM", "XYZM")) {
     expect_equal(
       get_sfc_dims(values[[dim]]),
       dim

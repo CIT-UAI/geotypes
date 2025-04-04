@@ -56,15 +56,36 @@ sf_sfg <- typed::as_assertion_factory(function(
   if (!is.null(point_dims)) {
     dims <- sf::st_sfc(value) %.>%
       sf::st_cast(., "POINT") %.>%
-      sapply(., length) %.>%
+      sapply(
+        .,
+        function(x) {
+          txt <- sf::st_as_text(x)
+          if (startsWith(txt, "POINT M (")) {
+            return("XYM")
+          }
+          if (startsWith(txt, "POINT Z (")) {
+            return("XYZ")
+          }
+          if (startsWith(txt, "POINT ZM (")) {
+            return("XYZM")
+          }
+          if (startsWith(txt, "POINT (")) {
+            return("XY")
+          }
+          stop(paste0(
+            "Point dimension not recognized :",
+            txt
+          ))
+        }
+      ) %.>%
       unique(.) %.>%
       sort(.)
     if (!(TRUE %in% all(dims %in% point_dims))) {
       stop(paste0(
         "The geometry can only have points of dimensions of ",
-        paste(point_dims, collapse = ","),
+        paste(sort(point_dims), collapse = ","),
         "\nThe input has ",
-        paste(dims, collapse = ",")
+        paste(sort(dims), collapse = ",")
       ))
     }
   }
@@ -85,7 +106,28 @@ get_sfc_dims <- function(value) {
       function(x) {
         sf::st_sfc(x) %.>%
           sf::st_cast(., "POINT") %.>%
-          sapply(., length)
+          sapply(
+            .,
+            function(x) {
+              txt <- sf::st_as_text(x)
+              if (startsWith(txt, "POINT M (")) {
+                return("XYM")
+              }
+              if (startsWith(txt, "POINT Z (")) {
+                return("XYZ")
+              }
+              if (startsWith(txt, "POINT ZM (")) {
+                return("XYZM")
+              }
+              if (startsWith(txt, "POINT (")) {
+                return("XY")
+              }
+              stop(paste0(
+                "Point dimension not recognized :",
+                txt
+              ))
+            }
+          )
       }
     ) %.>%
     unlist(.) %.>%
@@ -159,9 +201,9 @@ sf_sfc <- typed::as_assertion_factory(function(
       if (!(TRUE %in% all(dims %in% point_dims))) {
         stop(paste0(
           "The geometries can only have points of dimensions of ",
-          paste(point_dims, collapse = ","),
+          paste(sort(point_dims), collapse = ","),
           "\nThere is geometries with ",
-          paste(dims, collapse = ",")
+          paste(sort(dims), collapse = ",")
         ))
       }
     }
@@ -169,7 +211,7 @@ sf_sfc <- typed::as_assertion_factory(function(
       stop(paste0(
         "The geometry column can only have one dimesion,",
         " it have a mix of: ",
-        paste(dims, collapse = ",")
+        paste(sort(dims), collapse = ",")
       ))
     }
   }

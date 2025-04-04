@@ -37,6 +37,6 @@ test_that("sfnetworks sfnetwork null_ok Bad", {
 test_that("get_sfnetwork_dims", {
   expect_equal(
     get_sfnetwork_dims(network),
-    2
+    "XY"
   )
 })
