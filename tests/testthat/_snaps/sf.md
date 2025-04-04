@@ -195,5 +195,5 @@
       sf_sfc(uniform_dim = TRUE)(val)
     Condition
       Error in `f()`:
-      ! The geometry column can only have one dimesion, it have a mix of: 2,3
+      ! The geometry column can only have one dimesion, it have a mix of: XY,XYZ
 
